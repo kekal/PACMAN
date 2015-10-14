@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,212 +8,261 @@ namespace PACMAN
 {
     static class BattlefieldCircumstantials
     {
-        public static ushort size;
-        //public static ushort entrance;
-        public static Brick[,] BricksArray;
-        public static List<Brick> BricksList;
-        public static ushort entranceIndex;
-        public static ushort exitIndex;
+        private static ushort _size = 20;
+        public const ushort Squaresize = 30;
+        private static Brick[,] _bricksArray;
+        private static List<Brick> _bricksList;
+        private static ushort _entranceIndex;
+        private static ushort _exitIndex;
 
 
         public static void FeelField()
         {
-            size = (ushort)MainWindow.Wm.Battlfield.RowDefinitions.Count;
+            _size = (ushort) (MainWindow.Wm.Battlfield.Width/Squaresize);
 
-            BricksArray = new Brick[20, 20];
-            BricksList = new List<Brick>();
-
-
-            addWalls();
-
-            addCastle();
+            _bricksArray = new Brick[20, 20];
+            _bricksList = new List<Brick>();
 
 
-            addMaze();
+            AddWalls();
 
-            clearPath();
+            AddCastle();
 
 
+            AddMaze();
+
+            ClearPath();
+
+           
 
         }
 
 
-        public static bool CornerCheck(Brick brick)
+        private static bool CornerCheck(Brick brick)
         {
-            return (Grid.GetColumn(brick) == 0 || Grid.GetColumn(brick) == 19) && (Grid.GetRow(brick) == 0 || Grid.GetRow(brick) == 19);
+            return (Canvas.GetLeft(brick) == 0 || Canvas.GetLeft(brick) == 19*Squaresize) &&
+                   (Canvas.GetTop(brick) == 0 || Canvas.GetTop(brick) == 19*Squaresize);
         }
 
-        public static void addBrick(ushort x, ushort y)
+        private static void AddBrick(ushort x, ushort y)
         {
-            if (BricksArray[x, y] != null) return;
+            if (_bricksArray[x, y] != null) return;
 
-            var tempBrick = new Brick();
+            var tempBrick = new Brick
+            {
+                Width = Squaresize, 
+                Height = Squaresize
+            };
             MainWindow.Wm.Battlfield.Children.Add(tempBrick);
-            Grid.SetColumn(tempBrick, x);
-            Grid.SetRow(tempBrick, y);
-            BricksArray[x, y] = tempBrick;
-            BricksList.Add(tempBrick);
+            Canvas.SetLeft(tempBrick, Squaresize * x);
+            Canvas.SetTop(tempBrick, Squaresize * y);
+            _bricksArray[x, y] = tempBrick;
+            _bricksList.Add(tempBrick);
         }
 
-        public static void addGhost(ushort x, ushort y, string command = "")
+        private static Ghost AddGhost(ushort x, ushort y, string command = "")
         {
-            if (BricksArray[x, y] != null) return;
-            Ghost tempBrick;
-
-            switch (command)
+            if (_bricksArray[x, y] != null) return null;
+            Ghost tempGhost;
+            try
             {
-                case "yellow":
-                    tempBrick = new YellowGhost();
-                    break;
-                case "red":
-                    tempBrick = new RedGhost();
-                    break;
-                default:
-                    tempBrick = new Ghost();
-                    break;
+                switch (command)
+                {
+                    case "yellow":
+                        tempGhost = new YellowGhost
+                        {
+                            Width = Squaresize,
+                            Height = Squaresize
+                        };
+                        break;
+                    case "red":
+                        tempGhost = new RedGhost
+                        {
+                            Width = Squaresize,
+                            Height = Squaresize
+                        };
+                        break;
+                    default:
+                        tempGhost = new Ghost
+                        {
+                            Width = Squaresize,
+                            Height = Squaresize
+                        };
+                        break;
+                }
+            }
+            catch (AlreadyInstatiated)
+            {
+                return null;
             }
 
-            MainWindow.Wm.Battlfield.Children.Add(tempBrick);
-            Grid.SetColumn(tempBrick, x);
-            Grid.SetRow(tempBrick, y);
-            BricksArray[x, y] = tempBrick;
-            BricksList.Add(tempBrick);
+            MainWindow.Wm.Battlfield.Children.Add(tempGhost);
+            Canvas.SetLeft(tempGhost, Squaresize * x);
+            Canvas.SetTop(tempGhost, Squaresize * y);
+            _bricksArray[x, y] = tempGhost;
+            _bricksList.Add(tempGhost);
+            return tempGhost;
         }
 
-        public static void addWalls()
+        private static void AddWalls()
         {
-            for (ushort j = 0; j < size; j++)
+            for (ushort j = 0; j < _size; j++)
             {
-                addBrick(0, j);
+                AddBrick(0, j);
             }
 
-            for (ushort j = 0; j < size; j++)
+            for (ushort j = 0; j < _size; j++)
             {
-                addBrick((ushort)(size - 1), j);
+                AddBrick((ushort)(_size - 1), j);
             }
 
-            var _size = (ushort)(size - 1);
-            for (ushort i = 1; i < _size; i++)
+            var cropedSize = (ushort)(_size - 1);
+            for (ushort i = 1; i < cropedSize; i++)
             {
-                addBrick(i, 0);
+                AddBrick(i, 0);
             }
 
-            for (ushort j = 1; j < _size; j++)
+            for (ushort j = 1; j < cropedSize; j++)
             {
-                addBrick(j, _size);
+                AddBrick(j, cropedSize);
             }
 
 
         }
 
-        public static void addCastle()
+        private static void AddCastle()
         {
 
-            ushort lowCentreEdge = (ushort)(size / 2 - 3);
-            ushort highCentreEdge = (ushort)(size / 2 + 3);
-            ushort _lowCentreEdge = (ushort)(lowCentreEdge + 1);
-            ushort _highCentreEdge = (ushort)(highCentreEdge - 1);
+            var lowCentreEdge = (ushort)(_size / 2 - 3);
+            var highCentreEdge = (ushort)(_size / 2 + 3);
+            var croplowCentreEdge = (ushort)(lowCentreEdge + 1);
+            var crophighCentreEdge = (ushort)(highCentreEdge - 1);
 
 
             for (var i = lowCentreEdge; i < highCentreEdge; i++)
             {
-                addBrick(i, lowCentreEdge);
+                AddBrick(i, lowCentreEdge);
             }
 
             for (var i = lowCentreEdge; i < highCentreEdge; i++)
             {
-                addBrick(i, _highCentreEdge);
+                AddBrick(i, crophighCentreEdge);
             }
 
-            for (ushort j = _lowCentreEdge; j < _highCentreEdge; j++)
+            for (ushort j = croplowCentreEdge; j < crophighCentreEdge; j++)
             {
-                addBrick(lowCentreEdge, j);
+                AddBrick(lowCentreEdge, j);
             }
 
-            for (ushort j = _lowCentreEdge; j < _highCentreEdge; j++)
+            for (ushort j = croplowCentreEdge; j < crophighCentreEdge; j++)
             {
-                addBrick(_highCentreEdge, j);
+                AddBrick(crophighCentreEdge, j);
             }
 
 
         }
 
-        public static void addMaze()
+        private static void AddMaze()
         {
             var rnd = new Random();
-            for (ushort i = 1; i < size - 1; i++)
+            for (ushort i = 1; i < _size - 1; i++)
             {
-                for (ushort j = 1; j < size - 1; j++)
+                for (ushort j = 1; j < _size - 1; j++)
                 {
                     var temp = rnd.Next(10);
-                    if (temp > 5)
+                    if (temp > 6)
                     {
-                        addBrick(i, j);
+                        AddBrick(i, j);
                     }
                 }
             }
         }
 
 
-
-        public static void clearPath()
+        private static void ClearPath()
         {
-            ushort lowCentreEdge = (ushort)(size / 2 - 3);
-            ushort highCentreEdge = (ushort)(size / 2 + 3);
-            ushort _lowCentreEdge = (ushort)(lowCentreEdge + 1);
-            ushort _highCentreEdge = (ushort)(highCentreEdge - 1);
+            ClearEntrance();
 
-            entranceIndex = (ushort)(new Random()).Next(size * 4 - 4);
-            for (; CornerCheck(BricksList[entranceIndex]); entranceIndex = (ushort)(new Random()).Next(size * 4 - 4)) ;
+            ClearApproach(_entranceIndex);
 
-            ClearWays(entranceIndex);
+            ClearEscape();
 
-            exitIndex = (ushort)(new Random()).Next(size * 4 - 4);
-            for (; CornerCheck(BricksList[exitIndex]) || exitIndex == entranceIndex; exitIndex = (ushort)(new Random()).Next(size * 4 - 4)) ;
+            ClearApproach(_exitIndex);
 
-            ClearWays(exitIndex);
+            ClearBailey();
 
+            ClearCastleGates();
+           
+            ClearCorridor();
+        }
 
-            for (var i = _lowCentreEdge; i < _highCentreEdge; i++)
+        private static void ClearCastleGates()
+        {
+            var highCentreEdge = (ushort)(_size / 2 + 3);
+            var crophighCentreEdge = (ushort)(highCentreEdge - 1);
+
+            RemoveBattlefieldElement((ushort)(_size / 2 - 1), crophighCentreEdge);
+            RemoveBattlefieldElement((ushort)(_size / 2), crophighCentreEdge);
+        }
+
+        private static void ClearEscape()
+        {
+            _exitIndex = (ushort)(new Random()).Next(_size * 4 - 4);
+            for (; CornerCheck(_bricksList[_exitIndex]) || _exitIndex == _entranceIndex; _exitIndex = (ushort)(new Random()).Next(_size * 4 - 4)) ;
+        }
+
+        private static void ClearEntrance()
+        {
+            _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4);
+            for (; CornerCheck(_bricksList[_entranceIndex]); _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4)) ;
+        }
+
+        private static void ClearBailey()
+        {
+            var lowCentreEdge = (ushort)(_size / 2 - 3);
+            var highCentreEdge = (ushort)(_size / 2 + 3);
+            var croplowCentreEdge = (ushort)(lowCentreEdge + 1);
+            var crophighCentreEdge = (ushort)(highCentreEdge - 1);
+            for (var i = croplowCentreEdge; i < crophighCentreEdge; i++)
             {
-                for (var j = _lowCentreEdge; j < _highCentreEdge; j++)
+                for (var j = croplowCentreEdge; j < crophighCentreEdge; j++)
                 {
                     RemoveBattlefieldElement(i, j);
                 }
             }
+        }
 
-            RemoveBattlefieldElement((ushort)(size / 2 - 1), _highCentreEdge);
-            RemoveBattlefieldElement((ushort)(size / 2), _highCentreEdge);
-
-            for (var i = size / 4; i < size * 3 / 4 + 1; i++)
+        private static void ClearCorridor()
+        {
+            for (var i = _size / 4; i < _size * 3 / 4 + 1; i++)
             {
-                RemoveBattlefieldElement((ushort)i, (ushort)(size / 4));
+                RemoveBattlefieldElement((ushort)i, (ushort)(_size / 4));
             }
 
-            for (var i = size / 4; i < size * 3 / 4 + 1; i++)
+            for (var i = _size / 4; i < _size * 3 / 4 + 1; i++)
             {
-                RemoveBattlefieldElement((ushort)i, (ushort)(size * 3 / 4));
+                RemoveBattlefieldElement((ushort)i, (ushort)(_size * 3 / 4));
             }
 
-            for (var j = size / 4; j < size * 3 / 4 + 1; j++)
+            for (var j = _size / 4; j < _size * 3 / 4 + 1; j++)
             {
-                RemoveBattlefieldElement((ushort)(size / 4), (ushort)j);
+                RemoveBattlefieldElement((ushort)(_size / 4), (ushort)j);
             }
 
-            for (var j = size / 4; j < size * 3 / 4 + 1; j++)
+            for (var j = _size / 4; j < _size * 3 / 4 + 1; j++)
             {
-                RemoveBattlefieldElement((ushort)(size * 3 / 4), (ushort)j);
+                RemoveBattlefieldElement((ushort)(_size * 3 / 4), (ushort)j);
             }
         }
 
-        public static void ClearWays(int index)
+        private static void ClearApproach(int index)
         {
-            ushort lowCentreEdge = (ushort)(size / 2 - 3);
-            ushort _highCentreEdge = (ushort)(size / 2 + 2);
-            var _size = (ushort)(size - 1);
+            var lowCentreEdge = (ushort)(_size / 2 - 3);
+            var crophighCentreEdge = (ushort)(_size / 2 + 2);
+            var cropSize = (ushort)(_size - 1);
 
-            var column = (ushort)Grid.GetColumn(BricksList[index]);
-            var row = (ushort)Grid.GetRow(BricksList[index]);
+            var column = (ushort) (Canvas.GetLeft(_bricksList[index])/Squaresize);
+            var row = (ushort) (Canvas.GetTop(_bricksList[index])/Squaresize);
 
             if (column == 0)
             {
@@ -227,9 +272,9 @@ namespace PACMAN
                 }
             }
 
-            if (column == _size)
+            if (column == cropSize)
             {
-                for (ushort i = _size; i > _highCentreEdge; i--)
+                for (var i = cropSize; i > crophighCentreEdge; i--)
                 {
                     RemoveBattlefieldElement(row, i);
                 }
@@ -243,9 +288,9 @@ namespace PACMAN
                 }
             }
 
-            if (row == _size)
+            if (row == cropSize)
             {
-                for (ushort i = _size; i > _highCentreEdge; i--)
+                for (var i = cropSize; i > crophighCentreEdge; i--)
                 {
                     RemoveBattlefieldElement(column, i);
                 }
@@ -254,21 +299,19 @@ namespace PACMAN
 
         public static bool MoveBattlefieldElement(ushort x1, ushort y1, ushort x2, ushort y2)
         {
-            if (BricksArray[x2, y2].GetType() == typeof(Brick))
-            {
-                return false;
-            }
-            BricksArray[x2, y2] = BricksArray[x1, y1];
-            BricksArray[x1, y1] = null;
+            if (_bricksArray[x2, y2] != null) return false;
+
+            _bricksArray[x2, y2] = _bricksArray[x1, y1];
+            _bricksArray[x1, y1] = null;
             return true;
         }
 
 
-        public static void RemoveBattlefieldElement(ushort x, ushort y)
+        private static void RemoveBattlefieldElement(ushort x, ushort y)
         {
-            MainWindow.Wm.Battlfield.Children.Remove(BricksArray[x, y]);
-            BricksList.Remove(BricksArray[x, y]);
-            BricksArray[x, y] = null;
+            MainWindow.Wm.Battlfield.Children.Remove(_bricksArray[x, y]);
+            _bricksList.Remove(_bricksArray[x, y]);
+            _bricksArray[x, y] = null;
         }
 
         public static void RemoveBattlefieldElement(Brick brick)
@@ -276,16 +319,21 @@ namespace PACMAN
             RemoveBattlefieldElement((ushort)Grid.GetColumn(brick), (ushort)Grid.GetRow(brick));
         }
 
-        public static void AddGhostToCastle()
+        public static void AddGhostToCastle(string type)
         {
 
             for (ushort i = 7; i < 12; i++)
             {
                 for (ushort j = 7; j < 12; j++)
                 {
-                    if (BricksArray[i, j] != null) continue;
+                    if (_bricksArray[i, j] != null) continue;
 
-                    addGhost(i, j, "yellow");
+                    var ghost = AddGhost(i, j, type);
+                    if (ghost != null)
+                    {
+                        ghost.MoveGhost(1, 0);
+                    }
+                    MessageBox.Show("!!!!");
                     return;
                 }
             }

@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+using Path = System.Windows.Shapes.Path;
 
 namespace PACMAN
 {
     class Ghost : Brick
     {
+        private const double DefaultSpeed = 1.0/500;
+
         public Ghost()
         {
             pathData.Data = Geometry.Parse(
                     "M0,100 L0,100 C16,66 8,0 50,0 92,0 83,67 100,100 M100,100 C91,91 91,80 75,80 57,80 67,100 50,100 33,100 40,80 25,80 9,80 0,100 0,100"
                     );
-
 
             var eyesPath = new Path
             {
@@ -32,29 +31,60 @@ namespace PACMAN
 
             LayoutRoot.Children.Add(eyesPath);
 
-            MoveRight();
+            
         }
 
-        public void MoveRight()
+        public void MoveGhost(int x, int y)
         {
-            var rightMarginAnimation = new ThicknessAnimation
+            if (Math.Abs(x) + Math.Abs(y) > 1)
             {
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                From = Margin,
-                To = new Thickness(30, 0, -30, 0)
-            };
-            var sb = new Storyboard();
+                MessageBox.Show(GetType() + " trying to move to the (" + x +", " + y + ").");
+                throw new InvalidDataException();
+            }
 
-            sb.Children.Add(rightMarginAnimation);
-            //sb.Completed += MovingRight_Completed;
-            Storyboard.SetTarget(rightMarginAnimation, this);
-            Storyboard.SetTargetProperty(rightMarginAnimation, new PropertyPath(MarginProperty));
+            var left = Canvas.GetLeft(this);
+            var xMovementAnimation = new DoubleAnimation
+            {
+                Duration = new Duration(TimeSpan.FromMilliseconds(1/DefaultSpeed)),
+                From = left,
+                To = left + x*BattlefieldCircumstantials.Squaresize
+            };
+
+            var top = Canvas.GetTop(this);
+            var yMovementAnimation = new DoubleAnimation
+            {
+                Duration = new Duration(TimeSpan.FromMilliseconds(1 / DefaultSpeed)),
+                From = top,
+                To = top + y * BattlefieldCircumstantials.Squaresize
+            };
+
+            var sb = new Storyboard();
+            //sb.Duration = new Duration(TimeSpan.FromMilliseconds(500));
+
+            sb.Children.Add(xMovementAnimation);
+            sb.Children.Add(yMovementAnimation);
+            sb.Completed +=
+                delegate
+                {
+                    BattlefieldCircumstantials.MoveBattlefieldElement(
+                        (ushort) (left/BattlefieldCircumstantials.Squaresize),
+                        (ushort) (top/BattlefieldCircumstantials.Squaresize),
+                        (ushort) (left/BattlefieldCircumstantials.Squaresize + x),
+                        (ushort) (top/BattlefieldCircumstantials.Squaresize + y));
+                };
+
+            Storyboard.SetTarget(xMovementAnimation, this);
+            Storyboard.SetTarget(yMovementAnimation, this);
+            Storyboard.SetTargetProperty(xMovementAnimation, new PropertyPath("(Canvas.Left)"));
+            Storyboard.SetTargetProperty(yMovementAnimation, new PropertyPath("(Canvas.Top)"));
+
+            //LayoutRoot.Resources.Add("unique_id", sb);
             sb.Begin();
         }
+    }
 
-        private void MovingRight_Completed(object sender, EventArgs e)
-        {
-            BattlefieldCircumstantials.MoveBattlefieldElement(1, 1, 1, 1);
-        }
+    internal class AlreadyInstatiated : Exception
+    {
+
     }
 }
