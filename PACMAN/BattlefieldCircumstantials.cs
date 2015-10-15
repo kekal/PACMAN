@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,98 +11,34 @@ namespace PACMAN
     {
         private static ushort _size = 20;
         public const ushort Squaresize = 30;
-        private static Brick[,] _bricksArray;
-        private static List<Brick> _bricksList;
+
         private static ushort _entranceIndex;
         private static ushort _exitIndex;
 
+        public static ushort _xEntrance;
+        public static ushort _yEntrance;
 
-        public static void FeelField()
+        //references collection
+        private static Brick[,] _fieldElementsArray;
+        private static List<Brick> _ghostsList;
+        private static List<Brick> _bricksList;
+
+
+        public static void GenerateField()
         {
-            _size = (ushort) (MainWindow.Wm.Battlfield.Width/Squaresize);
+            _size = (ushort)(MainWindow.Wm.Battlfield.Width / Squaresize);
 
-            _bricksArray = new Brick[20, 20];
+            _fieldElementsArray = new Brick[20, 20];
             _bricksList = new List<Brick>();
-
+            _ghostsList = new List<Brick>();
 
             AddWalls();
 
             AddCastle();
 
-
             AddMaze();
 
             ClearPath();
-
-           
-
-        }
-
-
-        private static bool CornerCheck(Brick brick)
-        {
-            return (Canvas.GetLeft(brick) == 0 || Canvas.GetLeft(brick) == 19*Squaresize) &&
-                   (Canvas.GetTop(brick) == 0 || Canvas.GetTop(brick) == 19*Squaresize);
-        }
-
-        private static void AddBrick(ushort x, ushort y)
-        {
-            if (_bricksArray[x, y] != null) return;
-
-            var tempBrick = new Brick
-            {
-                Width = Squaresize, 
-                Height = Squaresize
-            };
-            MainWindow.Wm.Battlfield.Children.Add(tempBrick);
-            Canvas.SetLeft(tempBrick, Squaresize * x);
-            Canvas.SetTop(tempBrick, Squaresize * y);
-            _bricksArray[x, y] = tempBrick;
-            _bricksList.Add(tempBrick);
-        }
-
-        private static Ghost AddGhost(ushort x, ushort y, string command = "")
-        {
-            if (_bricksArray[x, y] != null) return null;
-            Ghost tempGhost;
-            try
-            {
-                switch (command)
-                {
-                    case "yellow":
-                        tempGhost = new YellowGhost
-                        {
-                            Width = Squaresize,
-                            Height = Squaresize
-                        };
-                        break;
-                    case "red":
-                        tempGhost = new RedGhost
-                        {
-                            Width = Squaresize,
-                            Height = Squaresize
-                        };
-                        break;
-                    default:
-                        tempGhost = new Ghost
-                        {
-                            Width = Squaresize,
-                            Height = Squaresize
-                        };
-                        break;
-                }
-            }
-            catch (AlreadyInstatiated)
-            {
-                return null;
-            }
-
-            MainWindow.Wm.Battlfield.Children.Add(tempGhost);
-            Canvas.SetLeft(tempGhost, Squaresize * x);
-            Canvas.SetTop(tempGhost, Squaresize * y);
-            _bricksArray[x, y] = tempGhost;
-            _bricksList.Add(tempGhost);
-            return tempGhost;
         }
 
         private static void AddWalls()
@@ -122,9 +59,9 @@ namespace PACMAN
                 AddBrick(i, 0);
             }
 
-            for (ushort j = 1; j < cropedSize; j++)
+            for (ushort i = 1; i < cropedSize; i++)
             {
-                AddBrick(j, cropedSize);
+                AddBrick(i, cropedSize);
             }
 
 
@@ -178,43 +115,85 @@ namespace PACMAN
             }
         }
 
-
         private static void ClearPath()
         {
-            ClearEntrance();
+            DefineEntranceIndex();
 
             ClearApproach(_entranceIndex);
 
-            ClearEscape();
+            DefineEscapeIndex();
 
             ClearApproach(_exitIndex);
 
             ClearBailey();
 
             ClearCastleGates();
-           
+
             ClearCorridor();
         }
 
-        private static void ClearCastleGates()
+        private static void DefineEntranceIndex()
         {
-            var highCentreEdge = (ushort)(_size / 2 + 3);
-            var crophighCentreEdge = (ushort)(highCentreEdge - 1);
+            _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4);
+            for (; CornerCheck(_bricksList[_entranceIndex]); _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4)) ;
 
-            RemoveBattlefieldElement((ushort)(_size / 2 - 1), crophighCentreEdge);
-            RemoveBattlefieldElement((ushort)(_size / 2), crophighCentreEdge);
+
+            for (var j = 0; j < _size; j++)
+                for (var i = 0; i < _size; i++)
+                {
+                    if (_fieldElementsArray[i, j] != _bricksList[_entranceIndex]) continue;
+                    _xEntrance = (ushort)i;
+                    _yEntrance = (ushort)j;
+                    
+                }
         }
 
-        private static void ClearEscape()
+        private static void DefineEscapeIndex()
         {
             _exitIndex = (ushort)(new Random()).Next(_size * 4 - 4);
             for (; CornerCheck(_bricksList[_exitIndex]) || _exitIndex == _entranceIndex; _exitIndex = (ushort)(new Random()).Next(_size * 4 - 4)) ;
         }
 
-        private static void ClearEntrance()
+        private static void ClearApproach(int index)
         {
-            _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4);
-            for (; CornerCheck(_bricksList[_entranceIndex]); _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4)) ;
+            var lowCentreEdge = (ushort)(_size / 2 - 3);
+            var crophighCentreEdge = (ushort)(_size / 2 + 2);
+            var cropSize = (ushort)(_size - 1);
+
+            var column = (ushort)(Canvas.GetLeft(_bricksList[index]) / Squaresize);
+            var row = (ushort)(Canvas.GetTop(_bricksList[index]) / Squaresize);
+
+            if (column == 0)
+            {
+                for (ushort i = 0; i < lowCentreEdge; i++)
+                {
+                    RemoveElementFromField(row, i);
+                }
+            }
+
+            if (column == cropSize)
+            {
+                for (var i = cropSize; i > crophighCentreEdge; i--)
+                {
+                    RemoveElementFromField(row, i);
+                }
+            }
+
+            if (row == 0)
+            {
+                for (ushort i = 0; i < lowCentreEdge; i++)
+                {
+                    RemoveElementFromField(column, i);
+                }
+            }
+
+            if (row == cropSize)
+            {
+                for (var i = cropSize; i > crophighCentreEdge; i--)
+                {
+                    RemoveElementFromField(column, i);
+                }
+            }
         }
 
         private static void ClearBailey()
@@ -227,117 +206,173 @@ namespace PACMAN
             {
                 for (var j = croplowCentreEdge; j < crophighCentreEdge; j++)
                 {
-                    RemoveBattlefieldElement(i, j);
+                    RemoveElementFromField(i, j);
                 }
             }
+        }
+
+        private static void ClearCastleGates()
+        {
+            var highCentreEdge = (ushort)(_size / 2 + 3);
+            var crophighCentreEdge = (ushort)(highCentreEdge - 1);
+
+            RemoveElementFromField((ushort)(_size / 2 - 1), crophighCentreEdge);
+            RemoveElementFromField((ushort)(_size / 2), crophighCentreEdge);
         }
 
         private static void ClearCorridor()
         {
             for (var i = _size / 4; i < _size * 3 / 4 + 1; i++)
             {
-                RemoveBattlefieldElement((ushort)i, (ushort)(_size / 4));
+                RemoveElementFromField((ushort)i, (ushort)(_size / 4));
             }
 
             for (var i = _size / 4; i < _size * 3 / 4 + 1; i++)
             {
-                RemoveBattlefieldElement((ushort)i, (ushort)(_size * 3 / 4));
+                RemoveElementFromField((ushort)i, (ushort)(_size * 3 / 4));
             }
 
             for (var j = _size / 4; j < _size * 3 / 4 + 1; j++)
             {
-                RemoveBattlefieldElement((ushort)(_size / 4), (ushort)j);
+                RemoveElementFromField((ushort)(_size / 4), (ushort)j);
             }
 
             for (var j = _size / 4; j < _size * 3 / 4 + 1; j++)
             {
-                RemoveBattlefieldElement((ushort)(_size * 3 / 4), (ushort)j);
+                RemoveElementFromField((ushort)(_size * 3 / 4), (ushort)j);
             }
         }
 
-        private static void ClearApproach(int index)
+        private static bool CornerCheck(Brick brick)
         {
-            var lowCentreEdge = (ushort)(_size / 2 - 3);
-            var crophighCentreEdge = (ushort)(_size / 2 + 2);
-            var cropSize = (ushort)(_size - 1);
+            return (Canvas.GetLeft(brick) == 0 || Canvas.GetLeft(brick) == 19 * Squaresize) &&
+                   (Canvas.GetTop(brick) == 0 || Canvas.GetTop(brick) == 19 * Squaresize);
+        }
 
-            var column = (ushort) (Canvas.GetLeft(_bricksList[index])/Squaresize);
-            var row = (ushort) (Canvas.GetTop(_bricksList[index])/Squaresize);
+        private static void AddBrick(ushort x, ushort y)
+        {
+            if (_fieldElementsArray[x, y] != null) return;
 
-            if (column == 0)
+            var tempBrick = new Brick
             {
-                for (ushort i = 0; i < lowCentreEdge; i++)
+                Width = Squaresize,
+                Height = Squaresize
+            };
+            MainWindow.Wm.Battlfield.Children.Add(tempBrick);
+            Canvas.SetLeft(tempBrick, Squaresize * x);
+            Canvas.SetTop(tempBrick, Squaresize * y);
+            _fieldElementsArray[x, y] = tempBrick;
+            _bricksList.Add(tempBrick);
+        }
+
+        private static Ghost AddGhost(ushort x, ushort y, string command = "")
+        {
+            if (_fieldElementsArray[x, y] != null) return null;
+            Ghost tempGhost;
+            try
+            {
+                switch (command)
                 {
-                    RemoveBattlefieldElement(row, i);
+                    case "yellow":
+                        tempGhost = new YellowGhost
+                        {
+                            Width = Squaresize,
+                            Height = Squaresize
+                        };
+                        break;
+                    case "red":
+                        tempGhost = new RedGhost
+                        {
+                            Width = Squaresize,
+                            Height = Squaresize
+                        };
+                        break;
+                    default:
+                        tempGhost = new Ghost
+                        {
+                            Width = Squaresize,
+                            Height = Squaresize
+                        };
+                        break;
                 }
             }
-
-            if (column == cropSize)
+            catch (AlreadyInstatiated)
             {
-                for (var i = cropSize; i > crophighCentreEdge; i--)
-                {
-                    RemoveBattlefieldElement(row, i);
-                }
+                return null;
             }
 
-            if (row == 0)
-            {
-                for (ushort i = 0; i < lowCentreEdge; i++)
-                {
-                    RemoveBattlefieldElement(column, i);
-                }
-            }
+            MainWindow.Wm.Battlfield.Children.Add(tempGhost);
+            Canvas.SetLeft(tempGhost, Squaresize * x);
+            Canvas.SetTop(tempGhost, Squaresize * y);
+            _fieldElementsArray[x, y] = tempGhost;
+            _ghostsList.Add(tempGhost);
+            return tempGhost;
+        }
 
-            if (row == cropSize)
+        public static Brick AddGhostToCastle(string type)
+        {
+            for (ushort j = 7; j < 12; j++)
             {
-                for (var i = cropSize; i > crophighCentreEdge; i--)
+                for (ushort i = 7; i < 12; i++)
                 {
-                    RemoveBattlefieldElement(column, i);
+                    if (_fieldElementsArray[i, j] != null) continue;
+                    return AddGhost(i, j, type);
                 }
             }
+            return null;
+        }
+
+        internal static Brick AddPuckman()
+        {
+
+            //if (_fieldElementsArray[_xEntrance, _yEntrance] != null)
+            //{
+            //    //MessageBox.Show(_xEntrance + ", " + _yEntrance + "\n" + _fieldElementsArray[_xEntrance, _yEntrance]);
+            //    return null;
+            //}
+
+            var temp = new Puckman()
+            {
+                Width = Squaresize,
+                Height = Squaresize
+            };
+
+            MainWindow.Wm.Battlfield.Children.Add(temp);
+            Canvas.SetLeft(temp, Squaresize * _xEntrance);
+            Canvas.SetTop(temp, Squaresize * _yEntrance);
+            _fieldElementsArray[_xEntrance, _yEntrance] = temp;
+
+            return temp;
         }
 
         public static bool MoveBattlefieldElement(ushort x1, ushort y1, ushort x2, ushort y2)
         {
-            if (_bricksArray[x2, y2] != null) return false;
+            if (_fieldElementsArray[x2, y2] != null) return false;
 
-            _bricksArray[x2, y2] = _bricksArray[x1, y1];
-            _bricksArray[x1, y1] = null;
+            _fieldElementsArray[x2, y2] = _fieldElementsArray[x1, y1];
+            _fieldElementsArray[x1, y1] = null;
             return true;
         }
 
-
-        private static void RemoveBattlefieldElement(ushort x, ushort y)
+        private static void RemoveElementFromField(ushort x, ushort y)
         {
-            MainWindow.Wm.Battlfield.Children.Remove(_bricksArray[x, y]);
-            _bricksList.Remove(_bricksArray[x, y]);
-            _bricksArray[x, y] = null;
+            if (_fieldElementsArray[x, y] == null) return;
+
+            MainWindow.Wm.Battlfield.Children.Remove(_fieldElementsArray[x, y]);
+
+            if (_bricksList.Contains(_fieldElementsArray[x, y])) _bricksList.Remove(_fieldElementsArray[x, y]);
+            if (_ghostsList.Contains(_fieldElementsArray[x, y])) _ghostsList.Remove(_fieldElementsArray[x, y]);
+
+            _bricksList.Remove(_fieldElementsArray[x, y]);
+            _fieldElementsArray[x, y] = null;
         }
 
-        public static void RemoveBattlefieldElement(Brick brick)
+        public static void RemoveElementFromField(Brick brick)
         {
-            RemoveBattlefieldElement((ushort)Grid.GetColumn(brick), (ushort)Grid.GetRow(brick));
+            RemoveElementFromField((ushort)Grid.GetColumn(brick), (ushort)Grid.GetRow(brick));
         }
 
-        public static void AddGhostToCastle(string type)
-        {
 
-            for (ushort i = 7; i < 12; i++)
-            {
-                for (ushort j = 7; j < 12; j++)
-                {
-                    if (_bricksArray[i, j] != null) continue;
-
-                    var ghost = AddGhost(i, j, type);
-                    if (ghost != null)
-                    {
-                        ghost.MoveGhost(1, 0);
-                    }
-                    MessageBox.Show("!!!!");
-                    return;
-                }
-            }
-        }
     }
 
     //class Turtle

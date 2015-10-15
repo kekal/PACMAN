@@ -10,7 +10,8 @@
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
     </Window.Background>
 	<StackPanel Orientation="Vertical">
-        <Canvas x:Name="Battlfield" Width="600" Height="600"></Canvas>
+        <Canvas x:Name="Battlfield" Width="600" Height="600">
+        </Canvas>
 		<!--<Grid x:Name="Battlfield" HorizontalAlignment="Left" VerticalAlignment="Top">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="30"/>

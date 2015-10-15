@@ -10,10 +10,12 @@ namespace PACMAN
 {
     class Ghost : Brick
     {
-        private const double DefaultSpeed = 1.0/500;
+        private readonly double _defaultSpeed;
 
         public Ghost()
         {
+            _defaultSpeed = 1.0/500;
+
             pathData.Data = Geometry.Parse(
                     "M0,100 L0,100 C16,66 8,0 50,0 92,0 83,67 100,100 M100,100 C91,91 91,80 75,80 57,80 67,100 50,100 33,100 40,80 25,80 9,80 0,100 0,100"
                     );
@@ -31,7 +33,7 @@ namespace PACMAN
 
             LayoutRoot.Children.Add(eyesPath);
 
-            
+            Panel.SetZIndex(this, 1);
         }
 
         public void MoveGhost(int x, int y)
@@ -39,13 +41,13 @@ namespace PACMAN
             if (Math.Abs(x) + Math.Abs(y) > 1)
             {
                 MessageBox.Show(GetType() + " trying to move to the (" + x +", " + y + ").");
-                throw new InvalidDataException();
+                throw new ArgumentOutOfRangeException();
             }
 
             var left = Canvas.GetLeft(this);
             var xMovementAnimation = new DoubleAnimation
             {
-                Duration = new Duration(TimeSpan.FromMilliseconds(1/DefaultSpeed)),
+                Duration = new Duration(TimeSpan.FromMilliseconds(1/_defaultSpeed)),
                 From = left,
                 To = left + x*BattlefieldCircumstantials.Squaresize
             };
@@ -53,13 +55,13 @@ namespace PACMAN
             var top = Canvas.GetTop(this);
             var yMovementAnimation = new DoubleAnimation
             {
-                Duration = new Duration(TimeSpan.FromMilliseconds(1 / DefaultSpeed)),
+                Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed)),
                 From = top,
                 To = top + y * BattlefieldCircumstantials.Squaresize
             };
 
             var sb = new Storyboard();
-            //sb.Duration = new Duration(TimeSpan.FromMilliseconds(500));
+            sb.Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
 
             sb.Children.Add(xMovementAnimation);
             sb.Children.Add(yMovementAnimation);

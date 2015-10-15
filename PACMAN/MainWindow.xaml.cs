@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace PACMAN
@@ -11,15 +12,25 @@ namespace PACMAN
         {
             InitializeComponent();
             Wm = this;
-            BattlefieldCircumstantials.FeelField();
+            BattlefieldCircumstantials.GenerateField();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ((Button) sender).IsEnabled = false;
-            BattlefieldCircumstantials.AddGhostToCastle("red");
-            BattlefieldCircumstantials.AddGhostToCastle("yellow");
+            var templist = new[] {"red", "yellow"};
+
+            foreach (var s in templist.Where(s => BattlefieldCircumstantials.AddGhostToCastle(s) == null))
+            {
+                MessageBox.Show("Can't add to proper place ghost " + s);
+            }
+
+            BattlefieldCircumstantials.AddPuckman();
+
+
+            
             ((Button)sender).IsEnabled = true;
+            
             
         }
 

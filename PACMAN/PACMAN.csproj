@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Puckman.cs" />
     <Compile Include="RedGhost.cs" />
     <Compile Include="YellowGhost.cs" />
     <Page Include="Brick.xaml">
