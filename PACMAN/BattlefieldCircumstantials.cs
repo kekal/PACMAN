@@ -7,9 +7,12 @@ using System.Windows.Controls;
 
 namespace PACMAN
 {
+    
     static class BattlefieldCircumstantials
     {
-        private static ushort _size = 20;
+        public static Puckman Puckman;
+
+        public static ushort Size = 20;
         public const ushort Squaresize = 30;
 
         private static ushort _entranceIndex;
@@ -20,13 +23,13 @@ namespace PACMAN
 
         //references collection
         private static Brick[,] _fieldElementsArray;
-        private static List<Brick> _ghostsList;
+        public static List<Brick> _ghostsList;
         private static List<Brick> _bricksList;
 
 
         public static void GenerateField()
         {
-            _size = (ushort)(MainWindow.Wm.Battlfield.Width / Squaresize);
+            Size = (ushort)(MainWindow.Wm.Battlfield.Width / Squaresize);
 
             _fieldElementsArray = new Brick[20, 20];
             _bricksList = new List<Brick>();
@@ -43,17 +46,17 @@ namespace PACMAN
 
         private static void AddWalls()
         {
-            for (ushort j = 0; j < _size; j++)
+            for (ushort j = 0; j < Size; j++)
             {
                 AddBrick(0, j);
             }
 
-            for (ushort j = 0; j < _size; j++)
+            for (ushort j = 0; j < Size; j++)
             {
-                AddBrick((ushort)(_size - 1), j);
+                AddBrick((ushort)(Size - 1), j);
             }
 
-            var cropedSize = (ushort)(_size - 1);
+            var cropedSize = (ushort)(Size - 1);
             for (ushort i = 1; i < cropedSize; i++)
             {
                 AddBrick(i, 0);
@@ -70,8 +73,8 @@ namespace PACMAN
         private static void AddCastle()
         {
 
-            var lowCentreEdge = (ushort)(_size / 2 - 3);
-            var highCentreEdge = (ushort)(_size / 2 + 3);
+            var lowCentreEdge = (ushort)(Size / 2 - 3);
+            var highCentreEdge = (ushort)(Size / 2 + 3);
             var croplowCentreEdge = (ushort)(lowCentreEdge + 1);
             var crophighCentreEdge = (ushort)(highCentreEdge - 1);
 
@@ -102,9 +105,9 @@ namespace PACMAN
         private static void AddMaze()
         {
             var rnd = new Random();
-            for (ushort i = 1; i < _size - 1; i++)
+            for (ushort i = 1; i < Size - 1; i++)
             {
-                for (ushort j = 1; j < _size - 1; j++)
+                for (ushort j = 1; j < Size - 1; j++)
                 {
                     var temp = rnd.Next(10);
                     if (temp > 6)
@@ -134,12 +137,12 @@ namespace PACMAN
 
         private static void DefineEntranceIndex()
         {
-            _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4);
-            for (; CornerCheck(_bricksList[_entranceIndex]); _entranceIndex = (ushort)(new Random()).Next(_size * 4 - 4)) ;
+            _entranceIndex = (ushort)(new Random()).Next(Size * 4 - 4);
+            for (; CornerCheck(_bricksList[_entranceIndex]); _entranceIndex = (ushort)(new Random()).Next(Size * 4 - 4)) ;
 
 
-            for (var j = 0; j < _size; j++)
-                for (var i = 0; i < _size; i++)
+            for (var j = 0; j < Size; j++)
+                for (var i = 0; i < Size; i++)
                 {
                     if (_fieldElementsArray[i, j] != _bricksList[_entranceIndex]) continue;
                     _xEntrance = (ushort)i;
@@ -150,15 +153,15 @@ namespace PACMAN
 
         private static void DefineEscapeIndex()
         {
-            _exitIndex = (ushort)(new Random()).Next(_size * 4 - 4);
-            for (; CornerCheck(_bricksList[_exitIndex]) || _exitIndex == _entranceIndex; _exitIndex = (ushort)(new Random()).Next(_size * 4 - 4)) ;
+            _exitIndex = (ushort)(new Random()).Next(Size * 4 - 4);
+            for (; CornerCheck(_bricksList[_exitIndex]) || _exitIndex == _entranceIndex; _exitIndex = (ushort)(new Random()).Next(Size * 4 - 4)) ;
         }
 
         private static void ClearApproach(int index)
         {
-            var lowCentreEdge = (ushort)(_size / 2 - 3);
-            var crophighCentreEdge = (ushort)(_size / 2 + 2);
-            var cropSize = (ushort)(_size - 1);
+            var lowCentreEdge = (ushort)(Size / 2 - 3);
+            var crophighCentreEdge = (ushort)(Size / 2 + 2);
+            var cropSize = (ushort)(Size - 1);
 
             var column = (ushort)(Canvas.GetLeft(_bricksList[index]) / Squaresize);
             var row = (ushort)(Canvas.GetTop(_bricksList[index]) / Squaresize);
@@ -167,7 +170,7 @@ namespace PACMAN
             {
                 for (ushort i = 0; i < lowCentreEdge; i++)
                 {
-                    RemoveElementFromField(row, i);
+                    RemoveElementFromField(i, row);
                 }
             }
 
@@ -175,7 +178,7 @@ namespace PACMAN
             {
                 for (var i = cropSize; i > crophighCentreEdge; i--)
                 {
-                    RemoveElementFromField(row, i);
+                    RemoveElementFromField(i, row);
                 }
             }
 
@@ -198,8 +201,8 @@ namespace PACMAN
 
         private static void ClearBailey()
         {
-            var lowCentreEdge = (ushort)(_size / 2 - 3);
-            var highCentreEdge = (ushort)(_size / 2 + 3);
+            var lowCentreEdge = (ushort)(Size / 2 - 3);
+            var highCentreEdge = (ushort)(Size / 2 + 3);
             var croplowCentreEdge = (ushort)(lowCentreEdge + 1);
             var crophighCentreEdge = (ushort)(highCentreEdge - 1);
             for (var i = croplowCentreEdge; i < crophighCentreEdge; i++)
@@ -213,33 +216,33 @@ namespace PACMAN
 
         private static void ClearCastleGates()
         {
-            var highCentreEdge = (ushort)(_size / 2 + 3);
+            var highCentreEdge = (ushort)(Size / 2 + 3);
             var crophighCentreEdge = (ushort)(highCentreEdge - 1);
 
-            RemoveElementFromField((ushort)(_size / 2 - 1), crophighCentreEdge);
-            RemoveElementFromField((ushort)(_size / 2), crophighCentreEdge);
+            RemoveElementFromField((ushort)(Size / 2 - 1), crophighCentreEdge);
+            RemoveElementFromField((ushort)(Size / 2), crophighCentreEdge);
         }
 
         private static void ClearCorridor()
         {
-            for (var i = _size / 4; i < _size * 3 / 4 + 1; i++)
+            for (var i = Size / 4; i < Size * 3 / 4 + 1; i++)
             {
-                RemoveElementFromField((ushort)i, (ushort)(_size / 4));
+                RemoveElementFromField((ushort)i, (ushort)(Size / 4));
             }
 
-            for (var i = _size / 4; i < _size * 3 / 4 + 1; i++)
+            for (var i = Size / 4; i < Size * 3 / 4 + 1; i++)
             {
-                RemoveElementFromField((ushort)i, (ushort)(_size * 3 / 4));
+                RemoveElementFromField((ushort)i, (ushort)(Size * 3 / 4));
             }
 
-            for (var j = _size / 4; j < _size * 3 / 4 + 1; j++)
+            for (var j = Size / 4; j < Size * 3 / 4 + 1; j++)
             {
-                RemoveElementFromField((ushort)(_size / 4), (ushort)j);
+                RemoveElementFromField((ushort)(Size / 4), (ushort)j);
             }
 
-            for (var j = _size / 4; j < _size * 3 / 4 + 1; j++)
+            for (var j = Size / 4; j < Size * 3 / 4 + 1; j++)
             {
-                RemoveElementFromField((ushort)(_size * 3 / 4), (ushort)j);
+                RemoveElementFromField((ushort)(Size * 3 / 4), (ushort)j);
             }
         }
 
@@ -324,7 +327,6 @@ namespace PACMAN
 
         internal static Brick AddPuckman()
         {
-
             //if (_fieldElementsArray[_xEntrance, _yEntrance] != null)
             //{
             //    //MessageBox.Show(_xEntrance + ", " + _yEntrance + "\n" + _fieldElementsArray[_xEntrance, _yEntrance]);
@@ -342,6 +344,7 @@ namespace PACMAN
             Canvas.SetTop(temp, Squaresize * _yEntrance);
             _fieldElementsArray[_xEntrance, _yEntrance] = temp;
 
+            Puckman = temp;
             return temp;
         }
 
@@ -371,8 +374,6 @@ namespace PACMAN
         {
             RemoveElementFromField((ushort)Grid.GetColumn(brick), (ushort)Grid.GetRow(brick));
         }
-
-
     }
 
     //class Turtle

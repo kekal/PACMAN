@@ -11,6 +11,7 @@
     </Window.Background>
 	<StackPanel Orientation="Vertical">
         <Canvas x:Name="Battlfield" Width="600" Height="600">
+            <local:Ghost></local:Ghost>
         </Canvas>
 		<!--<Grid x:Name="Battlfield" HorizontalAlignment="Left" VerticalAlignment="Top">
 			<Grid.RowDefinitions>

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -10,11 +10,14 @@ namespace PACMAN
 {
     class Ghost : Brick
     {
+        public Point previousPosition;
+        public DependencyPropertyDescriptor leftDescriptor;
+        public DependencyPropertyDescriptor rightDescriptor;
         private readonly double _defaultSpeed;
 
         public Ghost()
         {
-            _defaultSpeed = 1.0/500;
+            _defaultSpeed = 1.0 / 500;
 
             pathData.Data = Geometry.Parse(
                     "M0,100 L0,100 C16,66 8,0 50,0 92,0 83,67 100,100 M100,100 C91,91 91,80 75,80 57,80 67,100 50,100 33,100 40,80 25,80 9,80 0,100 0,100"
@@ -34,22 +37,60 @@ namespace PACMAN
             LayoutRoot.Children.Add(eyesPath);
 
             Panel.SetZIndex(this, 1);
+
+            leftDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
+            leftDescriptor.AddValueChanged(this, delegate
+            {
+                if ((int)(Math.Abs(Canvas.GetLeft(this) / BattlefieldCircumstantials.Squaresize)) < 2)
+                {
+                    //moveDecision();
+                }
+            });
+
+            rightDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
+            rightDescriptor.AddValueChanged(this, delegate
+            {
+                if ((int)(Math.Abs(Canvas.GetTop(this) / BattlefieldCircumstantials.Squaresize)) < 2)
+                {
+                    //moveDecision();
+                }
+            });
         }
 
-        public void MoveGhost(int x, int y)
+
+        public void CheckMovementCommand(int x, int y)
         {
-            if (Math.Abs(x) + Math.Abs(y) > 1)
+            var square = BattlefieldCircumstantials.Squaresize;
+
+            if (Math.Abs(previousPosition.X - Canvas.GetLeft(this) / square) < 2 &&
+                Math.Abs(previousPosition.Y - Canvas.GetTop(this) / square) < 2) return;
+
+
+            var size = BattlefieldCircumstantials.Size;
+
+
+            if (Math.Abs(x) + Math.Abs(y) > 1 ||
+                Canvas.GetLeft(this) / square + x >= size ||
+                Canvas.GetTop(this) / square + y >= size)
             {
-                MessageBox.Show(GetType() + " trying to move to the (" + x +", " + y + ").");
+                MessageBox.Show(GetType() + " trying to move to the (" + x + ", " + y + ").");
                 throw new ArgumentOutOfRangeException();
             }
+
+            GhostMovement(x, y);
+
+        }
+
+        public void GhostMovement(int x, int y)
+        {
+            var square = BattlefieldCircumstantials.Squaresize;
 
             var left = Canvas.GetLeft(this);
             var xMovementAnimation = new DoubleAnimation
             {
-                Duration = new Duration(TimeSpan.FromMilliseconds(1/_defaultSpeed)),
+                Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed)),
                 From = left,
-                To = left + x*BattlefieldCircumstantials.Squaresize
+                To = left + x * square
             };
 
             var top = Canvas.GetTop(this);
@@ -57,11 +98,11 @@ namespace PACMAN
             {
                 Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed)),
                 From = top,
-                To = top + y * BattlefieldCircumstantials.Squaresize
+                To = top + y * square
             };
 
             var sb = new Storyboard();
-            sb.Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
+            //sb.Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
 
             sb.Children.Add(xMovementAnimation);
             sb.Children.Add(yMovementAnimation);
@@ -69,10 +110,14 @@ namespace PACMAN
                 delegate
                 {
                     BattlefieldCircumstantials.MoveBattlefieldElement(
-                        (ushort) (left/BattlefieldCircumstantials.Squaresize),
-                        (ushort) (top/BattlefieldCircumstantials.Squaresize),
-                        (ushort) (left/BattlefieldCircumstantials.Squaresize + x),
-                        (ushort) (top/BattlefieldCircumstantials.Squaresize + y));
+                        (ushort)(left / square),
+                        (ushort)(top / square),
+                        (ushort)(left / square + x),
+                        (ushort)(top / square + y));
+
+                    previousPosition = new Point(left / square + x, top / square + y);
+
+                    MoveDecision();
                 };
 
             Storyboard.SetTarget(xMovementAnimation, this);
@@ -80,10 +125,19 @@ namespace PACMAN
             Storyboard.SetTargetProperty(xMovementAnimation, new PropertyPath("(Canvas.Left)"));
             Storyboard.SetTargetProperty(yMovementAnimation, new PropertyPath("(Canvas.Top)"));
 
-            //LayoutRoot.Resources.Add("unique_id", sb);
             sb.Begin();
         }
+
+        public void MoveDecision()
+        {
+            if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
+
+
+            CheckMovementCommand(0, 1);
+        }
     }
+
+
 
     internal class AlreadyInstatiated : Exception
     {

@@ -46,7 +46,7 @@ namespace PACMAN
 
 
 
-            var anim = new DoubleAnimation(1, 0, new Duration(new TimeSpan(0, 0, 0, 0, 200)))
+            var anim = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromMilliseconds(200)))
             {
                 EasingFunction = new PowerEase { EasingMode = EasingMode.EaseIn },
                 RepeatBehavior = RepeatBehavior.Forever,
