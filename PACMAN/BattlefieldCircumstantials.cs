@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
 
 
 namespace PACMAN
 {
-    
+
     static class BattlefieldCircumstantials
     {
         public static Puckman Puckman;
@@ -22,9 +21,9 @@ namespace PACMAN
         public static ushort _yEntrance;
 
         //references collection
-        private static Brick[,] _fieldElementsArray;
+        public static Brick[,] _fieldElementsArray;
         public static List<Brick> _ghostsList;
-        private static List<Brick> _bricksList;
+        public static List<Brick> _bricksList;
 
 
         public static void GenerateField()
@@ -147,7 +146,7 @@ namespace PACMAN
                     if (_fieldElementsArray[i, j] != _bricksList[_entranceIndex]) continue;
                     _xEntrance = (ushort)i;
                     _yEntrance = (ushort)j;
-                    
+
                 }
         }
 
@@ -259,8 +258,10 @@ namespace PACMAN
             var tempBrick = new Brick
             {
                 Width = Squaresize,
-                Height = Squaresize
+                Height = Squaresize,
+                coordinates = new Point(x, y)
             };
+
             MainWindow.Wm.Battlfield.Children.Add(tempBrick);
             Canvas.SetLeft(tempBrick, Squaresize * x);
             Canvas.SetTop(tempBrick, Squaresize * y);
@@ -307,6 +308,8 @@ namespace PACMAN
             MainWindow.Wm.Battlfield.Children.Add(tempGhost);
             Canvas.SetLeft(tempGhost, Squaresize * x);
             Canvas.SetTop(tempGhost, Squaresize * y);
+
+            tempGhost.coordinates = new Point(x, y);
             _fieldElementsArray[x, y] = tempGhost;
             _ghostsList.Add(tempGhost);
             return tempGhost;
@@ -325,13 +328,14 @@ namespace PACMAN
             return null;
         }
 
-        internal static Brick AddPuckman()
+        internal static void AddPuckman()
         {
-            //if (_fieldElementsArray[_xEntrance, _yEntrance] != null)
-            //{
-            //    //MessageBox.Show(_xEntrance + ", " + _yEntrance + "\n" + _fieldElementsArray[_xEntrance, _yEntrance]);
-            //    return null;
-            //}
+            if (_fieldElementsArray[_xEntrance, _yEntrance] != null)
+            {
+                MessageBox.Show(_xEntrance + ", " + _yEntrance + " contains:\n" +
+                                _fieldElementsArray[_xEntrance, _yEntrance]);
+                throw new IndexOutOfRangeException();
+            }
 
             var temp = new Puckman()
             {
@@ -345,16 +349,18 @@ namespace PACMAN
             _fieldElementsArray[_xEntrance, _yEntrance] = temp;
 
             Puckman = temp;
-            return temp;
         }
 
-        public static bool MoveBattlefieldElement(ushort x1, ushort y1, ushort x2, ushort y2)
+        public static void MoveBattlefieldElement(ushort x1, ushort y1, ushort x2, ushort y2)
         {
-            if (_fieldElementsArray[x2, y2] != null) return false;
+            if (_fieldElementsArray[x2, y2] != null)
+            {
+                throw new ArgumentException();
+            }
 
             _fieldElementsArray[x2, y2] = _fieldElementsArray[x1, y1];
             _fieldElementsArray[x1, y1] = null;
-            return true;
+            return;
         }
 
         private static void RemoveElementFromField(ushort x, ushort y)
@@ -374,69 +380,19 @@ namespace PACMAN
         {
             RemoveElementFromField((ushort)Grid.GetColumn(brick), (ushort)Grid.GetRow(brick));
         }
+
+        public static Point getCoordinates(Brick element)
+        {
+            for (var j = 0; j < _fieldElementsArray.GetLength(0); j++)
+            {
+                for (var i = 0; i < _fieldElementsArray.GetLength(1); i++)
+                {
+                    if (_fieldElementsArray[i, j] != element) continue;
+
+                    return new Point(i, j);
+                }
+            }
+            return new Point(-1, -1);
+        }
     }
-
-    //class Turtle
-    //{
-    //    public List<turtlePath> pathesList = new List<turtlePath>();
-
-    //    public void makeStep()
-    //    {
-
-    //        for (var index = 0; index < pathesList.Count; index++)
-    //        {
-    //            var currentPoint = pathesList[index].PointList.Last();
-    //            var candidates = new List<Point>();
-    //            for (int i = currentPoint.X - 1; i < currentPoint.X + 1; i++)
-    //            {
-    //                for (int j = currentPoint.Y - 1; j < currentPoint.Y + 1; j++)
-    //                {
-    //                    foreach (var turtlepath in pathesList)
-    //                    {
-    //                        foreach (var point in turtlepath.PointList)
-    //                        {
-    //                            if (point.X != currentPoint.X)
-    //                            {
-    //                                candidates.Add(point);
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //            }
-
-    //            foreach (var candidate in candidates)
-    //            {
-    //                var tempturtle = new turtlePath
-    //                {
-    //                    PointList = pathesList[index].PointList.Select(point => new Point(point.X, point.Y)).ToList()
-    //                };
-    //                pathesList.Add(tempturtle);
-
-
-    //            }
-
-    //            pathesList.RemoveAt(index);
-    //            index -= 1;
-
-
-    //        }
-    //    }
-    //}
-
-    //class turtlePath
-    //{
-    //    public List<Point> PointList = new List<Point>();
-    //}
-
-    //class Point
-    //{
-    //    public Point(int x, int y)
-    //    {
-    //        Y = y;
-    //        X = x;
-    //    }
-
-    //    public int X { get; set; }
-    //    public int Y { get; set; }
-    //}
 }

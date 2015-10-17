@@ -16,6 +16,8 @@ namespace PACMAN
 
 	public partial class Brick
 	{
+	    public Point coordinates;
+
 		public Brick()
 		{
 			InitializeComponent();

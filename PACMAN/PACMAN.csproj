@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="PathFind.cs" />
     <Compile Include="Puckman.cs" />
     <Compile Include="RedGhost.cs" />
     <Compile Include="YellowGhost.cs" />

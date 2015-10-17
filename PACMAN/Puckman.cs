@@ -13,6 +13,7 @@ namespace PACMAN
 
         public Puckman()
         {
+            //Visibility = Visibility.Hidden;
             _defaultSpeed = 1.0 / 500;
 
             Name = "Puckman";

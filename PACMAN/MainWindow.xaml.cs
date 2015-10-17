@@ -25,7 +25,7 @@ namespace PACMAN
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ((Button) sender).IsEnabled = false;
-            var templist = new[] {"red", "yellow"};
+            var templist = new[] {"red"/*, "yellow"*/};
 
             foreach (var s in templist.Where(s => BattlefieldCircumstantials.AddGhostToCastle(s) == null))
             {
@@ -34,8 +34,8 @@ namespace PACMAN
 
             BattlefieldCircumstantials.AddPuckman();
 
-         
-            ((Ghost)BattlefieldCircumstantials._ghostsList[0]).CheckMovementCommand(0, 1);
+
+            ((Ghost) BattlefieldCircumstantials._ghostsList[0]).MoveDecision();
 
             ((Button)sender).IsEnabled = true;
             

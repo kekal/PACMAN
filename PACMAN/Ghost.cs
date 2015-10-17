@@ -4,15 +4,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using Path = System.Windows.Shapes.Path;
 
 namespace PACMAN
 {
     class Ghost : Brick
     {
-        public Point previousPosition;
-        public DependencyPropertyDescriptor leftDescriptor;
-        public DependencyPropertyDescriptor rightDescriptor;
+        private Point _previousPosition;
         private readonly double _defaultSpeed;
 
         public Ghost()
@@ -38,68 +37,107 @@ namespace PACMAN
 
             Panel.SetZIndex(this, 1);
 
-            leftDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
+            #region ================movement descriptors====================
+            var leftDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
             leftDescriptor.AddValueChanged(this, delegate
             {
-                if ((int)(Math.Abs(Canvas.GetLeft(this) / BattlefieldCircumstantials.Squaresize)) < 2)
+                if ((ushort)(Math.Abs(Canvas.GetLeft(this) % BattlefieldCircumstantials.Squaresize)) < 2)
                 {
                     //moveDecision();
                 }
             });
 
-            rightDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
+            var rightDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
             rightDescriptor.AddValueChanged(this, delegate
             {
-                if ((int)(Math.Abs(Canvas.GetTop(this) / BattlefieldCircumstantials.Squaresize)) < 2)
+                if ((ushort)(Math.Abs(Canvas.GetTop(this) % BattlefieldCircumstantials.Squaresize)) < 2)
                 {
                     //moveDecision();
                 }
             });
+            #endregion
         }
 
 
-        public void CheckMovementCommand(int x, int y)
+        public void CheckMovementCommand(Point goal)
         {
-            var square = BattlefieldCircumstantials.Squaresize;
+            //var x = (int) goal.X;
+            //var y = (int) goal.Y;
 
-            if (Math.Abs(previousPosition.X - Canvas.GetLeft(this) / square) < 2 &&
-                Math.Abs(previousPosition.Y - Canvas.GetTop(this) / square) < 2) return;
+            //const ushort square = BattlefieldCircumstantials.Squaresize;
+
+            ////var desiredPosition = new Point(Canvas.GetLeft(this)/square + x, Canvas.GetTop(this)/square + y);
+            //var desiredPosition = goal;
+
+            //if (Math.Abs(_previousPosition.X - Canvas.GetLeft(this) / square) < 0.5 &&
+            //    Math.Abs(_previousPosition.Y - Canvas.GetTop(this) / square) < 0.5)
+            //{
+            //    MessageBox.Show("same point movement!");
+            //    throw new ArgumentOutOfRangeException();
+            //}
 
 
-            var size = BattlefieldCircumstantials.Size;
+            //var size = BattlefieldCircumstantials.Size;
 
 
-            if (Math.Abs(x) + Math.Abs(y) > 1 ||
-                Canvas.GetLeft(this) / square + x >= size ||
-                Canvas.GetTop(this) / square + y >= size)
-            {
-                MessageBox.Show(GetType() + " trying to move to the (" + x + ", " + y + ").");
-                throw new ArgumentOutOfRangeException();
-            }
+            ////if (Math.Abs(x) + Math.Abs(y) > 1 || desiredPosition.X >= size || desiredPosition.Y >= size)
+            ////{
+            ////    MessageBox.Show(GetType() + " trying to move to the (" + x + ", " + y + ").");
+            ////    throw new ArgumentOutOfRangeException();
+            ////}
 
-            GhostMovement(x, y);
+
+            //var target = BattlefieldCircumstantials._fieldElementsArray[(int)Math.Round(desiredPosition.X), (int)Math.Round(desiredPosition.Y)];
+            //if (target != null )
+            //{
+            //    MessageBox.Show("wall riched");
+            //    return;
+            //}
+
+
+
+            GhostMovement(goal);
 
         }
 
-        public void GhostMovement(int x, int y)
+        public void GhostMovement(Point goal)
         {
-            var square = BattlefieldCircumstantials.Squaresize;
+            const ushort square = BattlefieldCircumstantials.Squaresize;
 
-            var left = Canvas.GetLeft(this);
+            var oldDiscreteX = Canvas.GetLeft(this) / square;
+            var oldDiscreteY = Canvas.GetTop(this) / square;
+
+            var oldX = Canvas.GetLeft(this);
+            var oldY = Canvas.GetTop(this);
+
+            var newX = goal.X * square;
+            var newY = goal.Y * square;
+
+            var newDiscreteX = goal.X;
+            var newdiscreteY = goal.Y;
+
+            var dur = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
+
             var xMovementAnimation = new DoubleAnimation
             {
-                Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed)),
-                From = left,
-                To = left + x * square
+                Duration = dur,
+                From = oldX,
+                To = newX
             };
 
-            var top = Canvas.GetTop(this);
             var yMovementAnimation = new DoubleAnimation
             {
-                Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed)),
-                From = top,
-                To = top + y * square
+                Duration = dur,
+                From = oldY,
+                To = newY
             };
+            _previousPosition = new Point(oldX / square, oldY / square);
+
+            BattlefieldCircumstantials.MoveBattlefieldElement(
+                (ushort)Math.Round(oldDiscreteX),
+                (ushort)Math.Round(oldDiscreteY),
+                (ushort)Math.Round(newDiscreteX),
+                (ushort)Math.Round(newdiscreteY));
 
             var sb = new Storyboard();
             //sb.Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
@@ -109,14 +147,6 @@ namespace PACMAN
             sb.Completed +=
                 delegate
                 {
-                    BattlefieldCircumstantials.MoveBattlefieldElement(
-                        (ushort)(left / square),
-                        (ushort)(top / square),
-                        (ushort)(left / square + x),
-                        (ushort)(top / square + y));
-
-                    previousPosition = new Point(left / square + x, top / square + y);
-
                     MoveDecision();
                 };
 
@@ -127,13 +157,17 @@ namespace PACMAN
 
             sb.Begin();
         }
-
         public void MoveDecision()
         {
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
 
+            var ghostWay = new PathFind(BattlefieldCircumstantials.getCoordinates(this),
+                new Point(BattlefieldCircumstantials._xEntrance, BattlefieldCircumstantials._yEntrance));
 
-            CheckMovementCommand(0, 1);
+            if (ghostWay.Path.Count > 1)
+            {
+                CheckMovementCommand(ghostWay.Path[0]);
+            }
         }
     }
 
