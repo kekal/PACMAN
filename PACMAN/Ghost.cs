@@ -1,18 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Timers;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Path = System.Windows.Shapes.Path;
-using Timer = System.Timers.Timer;
 
 namespace PACMAN
 {
     class Ghost : Brick
     {
-        private Point _previousPosition;
         private readonly double _defaultSpeed;
 
         public Ghost()
@@ -48,8 +46,8 @@ namespace PACMAN
                 }
             });
 
-            var rightDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
-            rightDescriptor.AddValueChanged(this, delegate
+            var topDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
+            topDescriptor.AddValueChanged(this, delegate
             {
                 if ((ushort)(Math.Abs(Canvas.GetTop(this) % BattlefieldCircumstantials.Squaresize)) < 2)
                 {
@@ -59,7 +57,7 @@ namespace PACMAN
             #endregion
         }
 
-        public void GhostMovement(Point goal)
+        public void CreatureMovement(Point goal)
         {
             const ushort square = BattlefieldCircumstantials.Squaresize;
 
@@ -90,7 +88,7 @@ namespace PACMAN
                 From = oldY,
                 To = newY
             };
-            _previousPosition = new Point(oldDiscreteX, oldDiscreteY);
+            //new Point(oldDiscreteX, oldDiscreteY);
 
             BattlefieldCircumstantials.MoveBattlefieldElement(
                 (ushort)Math.Round(oldDiscreteX),
@@ -99,8 +97,8 @@ namespace PACMAN
                 (ushort)Math.Round(newdiscreteY));
 
             var sb = new Storyboard();
-            
 
+            sb.Name = "GhostAnimation";
             sb.Children.Add(xMovementAnimation);
             sb.Children.Add(yMovementAnimation);
             sb.Completed +=
@@ -119,33 +117,36 @@ namespace PACMAN
 
         public void MoveDecision()
         {
+            if (BattlefieldCircumstantials.findDirectDistance(this, BattlefieldCircumstantials.Puckman) < 1.2)
+            {
+                return;
+            }
+
+            var currentCoordinates = BattlefieldCircumstantials.getCoordinates(this);
+            var puckmanCoordinates = BattlefieldCircumstantials.getCoordinates(BattlefieldCircumstantials.Puckman);
+
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
 
-            var ghostWay = new PathFind(BattlefieldCircumstantials.getCoordinates(this),
-                new Point(BattlefieldCircumstantials._xEntrance, BattlefieldCircumstantials._yEntrance));
+            var ghostWay = new PathFind(currentCoordinates, puckmanCoordinates);
 
             if (ghostWay.Path.Count > 1)
             {
-                GhostMovement(ghostWay.Path[0]);
-            } else
-            {
-                var timer = new Timer(500)
-                {
-                    AutoReset = false
-                };
-                timer.Elapsed += Maketry;
-                timer.Enabled = true;
+                CreatureMovement(ghostWay.Path[0]);
             }
-
+            else
+            {
+                foreach (var ghost in BattlefieldCircumstantials._ghostsList.Where(ghost => ghost != this))
+                {
+                    ghostWay = new PathFind(currentCoordinates, BattlefieldCircumstantials.getCoordinates(ghost));
+                    if (ghostWay.Path.Count > 1)
+                    {
+                        CreatureMovement(ghostWay.Path[0]);
+                        return;
+                    }
+                }
+                CreatureMovement(currentCoordinates);
+            }
         }
-
-        private void Maketry(object sender, ElapsedEventArgs elapsedEventArgs)
-        {
-            
-            MoveDecision();
-            
-        }
-
     }
 
 

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace PACMAN
 {
@@ -19,11 +16,9 @@ namespace PACMAN
             BattlefieldCircumstantials.GenerateField();
 
             //fillNimbers();
+            BattlefieldCircumstantials.AddPuckman();
 
         }
-
-        
-
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -35,25 +30,12 @@ namespace PACMAN
                 MessageBox.Show("Can't add to proper place ghost " + s);
             }
 
-            BattlefieldCircumstantials.AddPuckman();
+            BattlefieldCircumstantials.Puckman.MoveDecision();
 
-
-            ((Ghost) BattlefieldCircumstantials._ghostsList[0]).MoveDecision();
-            ((Ghost)BattlefieldCircumstantials._ghostsList[1]).MoveDecision();
+            //((Ghost) BattlefieldCircumstantials._ghostsList[0]).MoveDecision();
+            //((Ghost) BattlefieldCircumstantials._ghostsList[1]).MoveDecision();
 
             ((Button)sender).IsEnabled = true;  
-        }
-
-        public static void InMainDispatch(Action dlg)
-        {
-            if (Thread.CurrentThread.Name == "Main Thread")
-            {
-                dlg();
-            }
-            else
-            {
-                Wm.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<string>(delegate { dlg(); }), "?");
-            }
         }
 
         public void fillNimbers()
@@ -79,8 +61,12 @@ namespace PACMAN
                 }
         }
 
-
-
-        
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (BattlefieldCircumstantials.Puckman != null)
+            {
+                BattlefieldCircumstantials.Puckman.MoveDefine(e);
+            }
+        }
     }
 }

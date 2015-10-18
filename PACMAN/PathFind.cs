@@ -29,7 +29,7 @@ namespace PACMAN
 
             Search();
 
-            RevealPath();
+            RevealPath(_finish);
         }
 
 
@@ -104,9 +104,9 @@ namespace PACMAN
             }
         }
 
-        private void RevealPath()
+        private void RevealPath(Point finish)
         {
-            Path = new List<Point> { _finish };
+            Path = new List<Point> { finish };
 
             for (; ; )
             {
@@ -125,7 +125,10 @@ namespace PACMAN
                 }
 
                 var verifiedNodes = around.Where(point => _closed.ContainsKey(point)).ToDictionary(t => t, t => _closed[t]);
-                if (verifiedNodes.Count < 1) return;
+                if (verifiedNodes.Count < 1)
+                {
+                    return;
+                }
 
                 Path.Add(verifiedNodes.Aggregate((l, r) => l.Value < r.Value ? l : r).Key);
             }

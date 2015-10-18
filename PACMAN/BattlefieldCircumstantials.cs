@@ -11,8 +11,6 @@ namespace PACMAN
 
     static class BattlefieldCircumstantials
     {
-        
-
         public static Puckman Puckman;
 
         public static ushort Size = 20;
@@ -223,7 +221,7 @@ namespace PACMAN
             var crophighCentreEdge = (ushort)(highCentreEdge - 1);
 
             RemoveElementFromField((ushort)(Size / 2 - 1), crophighCentreEdge);
-            //RemoveElementFromField((ushort)(Size / 2), crophighCentreEdge);
+            RemoveElementFromField((ushort)(Size / 2), crophighCentreEdge);
         }
 
         private static void ClearCorridor()
@@ -357,14 +355,13 @@ namespace PACMAN
 
         public static void MoveBattlefieldElement(ushort x1, ushort y1, ushort x2, ushort y2)
         {
-            if (_fieldElementsArray[x2, y2] != null)
+            if (x1 == x2 && y1 == y2)
             {
-                throw new ArgumentException();
+                return;
             }
 
             _fieldElementsArray[x2, y2] = _fieldElementsArray[x1, y1];
             _fieldElementsArray[x1, y1] = null;
-            return;
         }
 
         private static void RemoveElementFromField(ushort x, ushort y)
@@ -391,14 +388,34 @@ namespace PACMAN
             {
                 for (var i = 0; i < _fieldElementsArray.GetLength(1); i++)
                 {
-                    if (_fieldElementsArray[i, j] != element) continue;
-
-                    return new Point(i, j);
+                    if (_fieldElementsArray[i, j] == element)
+                    {
+                        return new Point(i, j);
+                    }
                 }
             }
             return new Point(-1, -1);
         }
 
-        
+        public static double findDirectDistance(Brick brick1, Brick brick2)
+        {
+            double x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+            for (var j = 0; j < _fieldElementsArray.GetLength(1); j++)
+                for (var i = 0; i < _fieldElementsArray.GetLength(0); i++)
+                {
+                    if (_fieldElementsArray[i, j] == brick1)
+                    {
+                        x1 = i;
+                        y1 = j;
+                    }
+
+                    if (_fieldElementsArray[i, j] == brick2)
+                    {
+                        x2 = i;
+                        y2 = j;
+                    }
+                }
+            return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
+        }
     }
 }

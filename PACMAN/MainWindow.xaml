@@ -4,17 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:PACMAN" mc:Ignorable="d" x:Class="PACMAN.MainWindow"
         Title="P A C M A N"  
-        SizeToContent="WidthAndHeight"  >
+        SizeToContent="WidthAndHeight" KeyDown="Window_KeyDown"  >
     
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
     </Window.Background>
 	<StackPanel Orientation="Vertical">
-        <Canvas x:Name="Battlfield" Width="600" Height="600" />
-	    <StackPanel Orientation="Horizontal">
+        <Canvas x:Name="Battlfield" Width="600" Height="600" KeyDown="Window_KeyDown" />
+        <StackPanel Orientation="Horizontal">
 			<Button Content="DO" Click="Button_Click"/>
-            <TextBox x:Name="debText" Text="0"/>
 
-	    </StackPanel>
+        </StackPanel>
 	</StackPanel>
 </Window>
