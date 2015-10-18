@@ -1,14 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using CheckList;
 using Path = System.Windows.Shapes.Path;
 using Timer = System.Timers.Timer;
 
@@ -62,9 +58,6 @@ namespace PACMAN
             });
             #endregion
         }
-
-        
-
 
         public void GhostMovement(Point goal)
         {
@@ -124,7 +117,6 @@ namespace PACMAN
             sb.Begin();
         }
 
-
         public void MoveDecision()
         {
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
@@ -137,26 +129,19 @@ namespace PACMAN
                 GhostMovement(ghostWay.Path[0]);
             } else
             {
-                TaskManager.Add(null, delegate
+                var timer = new Timer(500)
                 {
-                    var timer = new Timer(500)
-                    {
-                        Enabled = true
-                    };
-                    timer.Elapsed += maketry;
-                    
-                });
+                    AutoReset = false
+                };
+                timer.Elapsed += Maketry;
+                timer.Enabled = true;
             }
 
         }
 
-        public void maketry(object sender, ElapsedEventArgs elapsedEventArgs)
+        private void Maketry(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            TaskManager.Add(null, delegate
-            {
-                MainWindow.Wm.debText.Text += "2";
-                
-            });
+            
             MoveDecision();
             
         }

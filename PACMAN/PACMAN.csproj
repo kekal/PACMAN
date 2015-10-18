@@ -57,7 +57,6 @@
     <Compile Include="PathFind.cs" />
     <Compile Include="Puckman.cs" />
     <Compile Include="RedGhost.cs" />
-    <Compile Include="TaskManager.cs" />
     <Compile Include="YellowGhost.cs" />
     <Page Include="Brick.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using CheckList;
 
 
 namespace PACMAN
@@ -224,7 +223,7 @@ namespace PACMAN
             var crophighCentreEdge = (ushort)(highCentreEdge - 1);
 
             RemoveElementFromField((ushort)(Size / 2 - 1), crophighCentreEdge);
-            RemoveElementFromField((ushort)(Size / 2), crophighCentreEdge);
+            //RemoveElementFromField((ushort)(Size / 2), crophighCentreEdge);
         }
 
         private static void ClearCorridor()
