@@ -1,11 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using CheckList;
 using Path = System.Windows.Shapes.Path;
+using Timer = System.Timers.Timer;
 
 namespace PACMAN
 {
@@ -58,47 +63,8 @@ namespace PACMAN
             #endregion
         }
 
+        
 
-        public void CheckMovementCommand(Point goal)
-        {
-            //var x = (int) goal.X;
-            //var y = (int) goal.Y;
-
-            //const ushort square = BattlefieldCircumstantials.Squaresize;
-
-            ////var desiredPosition = new Point(Canvas.GetLeft(this)/square + x, Canvas.GetTop(this)/square + y);
-            //var desiredPosition = goal;
-
-            //if (Math.Abs(_previousPosition.X - Canvas.GetLeft(this) / square) < 0.5 &&
-            //    Math.Abs(_previousPosition.Y - Canvas.GetTop(this) / square) < 0.5)
-            //{
-            //    MessageBox.Show("same point movement!");
-            //    throw new ArgumentOutOfRangeException();
-            //}
-
-
-            //var size = BattlefieldCircumstantials.Size;
-
-
-            ////if (Math.Abs(x) + Math.Abs(y) > 1 || desiredPosition.X >= size || desiredPosition.Y >= size)
-            ////{
-            ////    MessageBox.Show(GetType() + " trying to move to the (" + x + ", " + y + ").");
-            ////    throw new ArgumentOutOfRangeException();
-            ////}
-
-
-            //var target = BattlefieldCircumstantials._fieldElementsArray[(int)Math.Round(desiredPosition.X), (int)Math.Round(desiredPosition.Y)];
-            //if (target != null )
-            //{
-            //    MessageBox.Show("wall riched");
-            //    return;
-            //}
-
-
-
-            GhostMovement(goal);
-
-        }
 
         public void GhostMovement(Point goal)
         {
@@ -131,7 +97,7 @@ namespace PACMAN
                 From = oldY,
                 To = newY
             };
-            _previousPosition = new Point(oldX / square, oldY / square);
+            _previousPosition = new Point(oldDiscreteX, oldDiscreteY);
 
             BattlefieldCircumstantials.MoveBattlefieldElement(
                 (ushort)Math.Round(oldDiscreteX),
@@ -140,7 +106,7 @@ namespace PACMAN
                 (ushort)Math.Round(newdiscreteY));
 
             var sb = new Storyboard();
-            //sb.Duration = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
+            
 
             sb.Children.Add(xMovementAnimation);
             sb.Children.Add(yMovementAnimation);
@@ -157,6 +123,8 @@ namespace PACMAN
 
             sb.Begin();
         }
+
+
         public void MoveDecision()
         {
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
@@ -166,9 +134,33 @@ namespace PACMAN
 
             if (ghostWay.Path.Count > 1)
             {
-                CheckMovementCommand(ghostWay.Path[0]);
+                GhostMovement(ghostWay.Path[0]);
+            } else
+            {
+                TaskManager.Add(null, delegate
+                {
+                    var timer = new Timer(500)
+                    {
+                        Enabled = true
+                    };
+                    timer.Elapsed += maketry;
+                    
+                });
             }
+
         }
+
+        public void maketry(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            TaskManager.Add(null, delegate
+            {
+                MainWindow.Wm.debText.Text += "2";
+                
+            });
+            MoveDecision();
+            
+        }
+
     }
 
 
