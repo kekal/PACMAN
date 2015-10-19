@@ -87,10 +87,10 @@ namespace PACMAN
                         (newCandidates[i].Y >= BattlefieldCircumstantials.Size) ||
                         (newCandidates[i].X >= BattlefieldCircumstantials.Size) ||
                         (_border.ContainsKey(newCandidates[i])) ||
-                        (BattlefieldCircumstantials._ghostsList.Contains(
-                            BattlefieldCircumstantials._fieldElementsArray[(int)(newCandidates[i].X), (int)newCandidates[i].Y])) ||
-                        (BattlefieldCircumstantials._bricksList.Contains(
-                            BattlefieldCircumstantials._fieldElementsArray[(int)(newCandidates[i].X), (int)newCandidates[i].Y])) ||
+                        (BattlefieldCircumstantials.GhostsList.Contains(
+                            BattlefieldCircumstantials.FieldElementsArray[(int)(newCandidates[i].X), (int)newCandidates[i].Y])) ||
+                        (BattlefieldCircumstantials.BricksList.Contains(
+                            BattlefieldCircumstantials.FieldElementsArray[(int)(newCandidates[i].X), (int)newCandidates[i].Y])) ||
                         (_closed.ContainsKey(newCandidates[i]))
                         )
                     {

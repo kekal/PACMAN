@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,12 +26,13 @@ namespace PACMAN
     class Puckman : Ghost
     {
         private double _defaultSpeed;
+
         private HorisontalDirection _currentHorisontalDirection;
         private VerticalDirection _currentVerticalDirection;
+
         private HorisontalDirection _newHorisontalDirection;
         private VerticalDirection _newVerticalDirection;
 
-        
 
         public Puckman()
         {
@@ -42,33 +44,31 @@ namespace PACMAN
             Name = "Puckman";
             Width = BattlefieldCircumstantials.Squaresize;
             Height = BattlefieldCircumstantials.Squaresize;
+            SnapsToDevicePixels = true;
 
             LayoutRoot.Children.Add(new Ellipse
             {
-                Fill = new SolidColorBrush((Color) ColorConverter.ConvertFromString("Yellow"))
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Yellow"))
             });
-
-            pathData.StrokeThickness = 0;
-            pathData.Fill = new SolidColorBrush((Color) ColorConverter.ConvertFromString("Black"));
-            pathData.Data = Geometry.Parse(
-                    "M0,0 M100,100 M50,50 L101,25 101,75"
-                    );
-            pathData.RenderTransformOrigin = new Point(0.5, 0.5);
-
-            Panel.SetZIndex(pathData, 1);
-            Panel.SetZIndex(this, 1);
 
             ChawAnimation();
         }
 
         private void ChawAnimation()
         {
+
+            pathData.StrokeThickness = 0;
+            pathData.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Black"));
+            pathData.Data = Geometry.Parse("M0,0 M100,100 M50,50 L101,25 101,75");
+            pathData.RenderTransformOrigin = new Point(0.5, 0.5);
+
+            Panel.SetZIndex(pathData, 1);
+            Panel.SetZIndex(this, 1);
+
             var translation = new ScaleTransform(1, 1);
             var translationName = "Chawing" + translation.GetHashCode();
             RegisterName(translationName, translation);
             pathData.RenderTransform = translation;
-
-
 
             var anim = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromMilliseconds(200)))
             {
@@ -91,17 +91,72 @@ namespace PACMAN
 
         public void MoveDecision()
         {
-            var currentCoordinates = BattlefieldCircumstantials.getCoordinates(this);
+            var currentCoordinates = BattlefieldCircumstantials.GetCoordinates(this);
+
+            var newTarget = BattlefieldCircumstantials.FieldElementsArray[
+                (int) (currentCoordinates.X) + (int) _newHorisontalDirection,
+                (int) (currentCoordinates).Y + (int) _newVerticalDirection];
+
+            var oldTarget = BattlefieldCircumstantials.FieldElementsArray[
+                (int) (currentCoordinates.X) + (int) _currentHorisontalDirection,
+                (int) (currentCoordinates).Y + (int) _currentVerticalDirection];
+
+
+            if (newTarget == null)
+            {
+                _currentHorisontalDirection = _newHorisontalDirection;
+                _currentVerticalDirection = _newVerticalDirection;
+            }
+            else if (oldTarget == null)
+            {
+                
+            }
+            else if (newTarget.GetType() == typeof(Boost))
+            {
+                _currentHorisontalDirection = _newHorisontalDirection;
+                _currentVerticalDirection = _newVerticalDirection;
+                ApplyBoost((ushort)(currentCoordinates.X + (int)_newHorisontalDirection), (ushort)(currentCoordinates.Y + (int)_newVerticalDirection));
+
+            }
+            else if (oldTarget.GetType() == typeof(Boost))
+            {
+                ApplyBoost((ushort)(currentCoordinates.X + (int)_currentHorisontalDirection), (ushort)(currentCoordinates.Y + (int)_currentVerticalDirection));
+            }
+
+            else
+            {
+                _currentHorisontalDirection = HorisontalDirection.Stay;
+                _currentVerticalDirection = VerticalDirection.Stay;
+            }
 
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
 
-            var newPoint = new Point(currentCoordinates.X + (int) _newHorisontalDirection,
-                currentCoordinates.Y + (int) _newVerticalDirection);
+            var newPoint = new Point(currentCoordinates.X + (int)_currentHorisontalDirection,
+                currentCoordinates.Y + (int)_currentVerticalDirection);
 
             CreatureMovement(newPoint);
         }
 
-        public void CreatureMovement(Point goal)
+        private void ApplyBoost(ushort x, ushort y)
+        {
+            BattlefieldCircumstantials.FieldElementsArray[x, y].Visibility = Visibility.Collapsed;
+
+            BattlefieldCircumstantials.RemoveElementFromField(x, y);
+            _defaultSpeed *= 2;
+            var tempTimer = new Timer(3000)
+            {
+                AutoReset = false
+            
+            };
+            tempTimer.Elapsed += delegate
+            {
+                _defaultSpeed /= 2;
+            };
+            tempTimer.Enabled = true;
+
+        }
+
+        private void CreatureMovement(Point goal)
         {
             const ushort square = BattlefieldCircumstantials.Squaresize;
 
@@ -117,7 +172,7 @@ namespace PACMAN
             var newDiscreteX = goal.X;
             var newdiscreteY = goal.Y;
 
-            var dur = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
+            var dur = new Duration(TimeSpan.FromMilliseconds(1/_defaultSpeed));
 
             var xMovementAnimation = new DoubleAnimation
             {
@@ -132,7 +187,7 @@ namespace PACMAN
                 From = oldY,
                 To = newY
             };
-            //new Point(oldDiscreteX, oldDiscreteY);
+
 
             BattlefieldCircumstantials.MoveBattlefieldElement(
                 (ushort)Math.Round(oldDiscreteX),
@@ -159,7 +214,6 @@ namespace PACMAN
             sb.Begin();
         }
 
-
         public void MoveDefine(KeyEventArgs args)
         {
             _newHorisontalDirection = HorisontalDirection.Stay;
@@ -170,17 +224,17 @@ namespace PACMAN
                     //MessageBox.Show("Up");
                     _newVerticalDirection = VerticalDirection.Up;
                     break;
-            
+
                 case Key.Down:
                     //MessageBox.Show("Down");
                     _newVerticalDirection = VerticalDirection.Down;
                     break;
-            
+
                 case Key.Left:
                     //MessageBox.Show("Left");
                     _newHorisontalDirection = HorisontalDirection.Left;
                     break;
-            
+
                 case Key.Right:
                     //MessageBox.Show("Right");
                     _newHorisontalDirection = HorisontalDirection.Right;

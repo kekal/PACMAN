@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Boost.cs" />
     <Compile Include="PathFind.cs" />
     <Compile Include="Puckman.cs" />
     <Compile Include="RedGhost.cs" />
@@ -62,7 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Ghost1.xaml">
+    <Page Include="CherryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -79,8 +80,8 @@
       <DependentUpon>Brick.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ghost.cs" />
-    <Compile Include="Ghost1.xaml.cs">
-      <DependentUpon>Ghost1.xaml</DependentUpon>
+    <Compile Include="CherryControl.xaml.cs">
+      <DependentUpon>CherryControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

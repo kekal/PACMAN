@@ -1,10 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using Path = System.Windows.Shapes.Path;
 
 namespace PACMAN
@@ -15,8 +15,9 @@ namespace PACMAN
 
         public Ghost()
         {
-            _defaultSpeed = 1.0 / 500;
+            _defaultSpeed = 1.0 / 300;
 
+            SnapsToDevicePixels = true;
             pathData.Data = Geometry.Parse(
                     "M0,100 L0,100 C16,66 8,0 50,0 92,0 83,67 100,100 M100,100 C91,91 91,80 75,80 57,80 67,100 50,100 33,100 40,80 25,80 9,80 0,100 0,100"
                     );
@@ -32,28 +33,57 @@ namespace PACMAN
                 Stretch = Stretch.Fill
             };
 
-            LayoutRoot.Children.Add(eyesPath);
+            var pupil1 = new Ellipse
+            {
+                SnapsToDevicePixels = false,
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Black")),
+                StrokeThickness = 0,
+                Width = 1.5,
+                Height = 1.5,
+                Margin = new Thickness(0, 0, 10, 4),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Stretch = Stretch.Fill
+            };
 
+            var pupil2 = new Ellipse
+            {
+                SnapsToDevicePixels = false,
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Black")),
+                StrokeThickness = 0,
+                Width = 1.5,
+                Height = 1.5,
+                Margin = new Thickness(9.5, 0, 0, 4),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Stretch = Stretch.Fill
+            };
+
+            LayoutRoot.Children.Add(eyesPath);
+            LayoutRoot.Children.Add(pupil1);
+            LayoutRoot.Children.Add(pupil2);
+
+            
             Panel.SetZIndex(this, 1);
 
             #region ================movement descriptors====================
-            var leftDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
-            leftDescriptor.AddValueChanged(this, delegate
-            {
-                if ((ushort)(Math.Abs(Canvas.GetLeft(this) % BattlefieldCircumstantials.Squaresize)) < 2)
-                {
-                    //moveDecision();
-                }
-            });
+            //var leftDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
+            //leftDescriptor.AddValueChanged(this, delegate
+            //{
+            //    if ((ushort)(Math.Abs(Canvas.GetLeft(this) % BattlefieldCircumstantials.Squaresize)) < 2)
+            //    {
+            //        //moveDecision();
+            //    }
+            //});
 
-            var topDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
-            topDescriptor.AddValueChanged(this, delegate
-            {
-                if ((ushort)(Math.Abs(Canvas.GetTop(this) % BattlefieldCircumstantials.Squaresize)) < 2)
-                {
-                    //moveDecision();
-                }
-            });
+            //var topDescriptor = DependencyPropertyDescriptor.FromProperty(Canvas.LeftProperty, typeof(Canvas));
+            //topDescriptor.AddValueChanged(this, delegate
+            //{
+            //    if ((ushort)(Math.Abs(Canvas.GetTop(this) % BattlefieldCircumstantials.Squaresize)) < 2)
+            //    {
+            //        //moveDecision();
+            //    }
+            //});
             #endregion
         }
 
@@ -117,13 +147,14 @@ namespace PACMAN
 
         public void MoveDecision()
         {
-            if (BattlefieldCircumstantials.findDirectDistance(this, BattlefieldCircumstantials.Puckman) < 1.2)
+            if (BattlefieldCircumstantials.FindDirectDistance(this, BattlefieldCircumstantials.Puckman) < 1.2)
             {
+                //===================================================================
                 return;
             }
 
-            var currentCoordinates = BattlefieldCircumstantials.getCoordinates(this);
-            var puckmanCoordinates = BattlefieldCircumstantials.getCoordinates(BattlefieldCircumstantials.Puckman);
+            var currentCoordinates = BattlefieldCircumstantials.GetCoordinates(this);
+            var puckmanCoordinates = BattlefieldCircumstantials.GetCoordinates(BattlefieldCircumstantials.Puckman);
 
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
 
@@ -135,9 +166,9 @@ namespace PACMAN
             }
             else
             {
-                foreach (var ghost in BattlefieldCircumstantials._ghostsList.Where(ghost => ghost != this))
+                foreach (var ghost in BattlefieldCircumstantials.GhostsList.Where(ghost => ghost != this))
                 {
-                    ghostWay = new PathFind(currentCoordinates, BattlefieldCircumstantials.getCoordinates(ghost));
+                    ghostWay = new PathFind(currentCoordinates, BattlefieldCircumstantials.GetCoordinates(ghost));
                     if (ghostWay.Path.Count > 1)
                     {
                         CreatureMovement(ghostWay.Path[0]);
@@ -148,8 +179,6 @@ namespace PACMAN
             }
         }
     }
-
-
 
     internal class AlreadyInstatiated : Exception
     {
