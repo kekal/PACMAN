@@ -2,66 +2,26 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:PACMAN" mc:Ignorable="d" x:Class="PACMAN.MainWindow"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:PACMAN" x:Name="lastWin" mc:Ignorable="d" x:Class="PACMAN.MainWindow"
         Title="P A C M A N"  
-        SizeToContent="WidthAndHeight"  >
+        SizeToContent="WidthAndHeight" KeyDown="Window_KeyDown"  >
     
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
     </Window.Background>
 	<StackPanel Orientation="Vertical">
-        <Canvas x:Name="Battlfield" Width="600" Height="600">
-            <local:Ghost></local:Ghost>
+        <Canvas x:Name="Battlfield" Width="600" Height="600" KeyDown="Window_KeyDown" >
+			<Path x:Name="ONE" Data="M0,0 M600,600 M207.5,171.5 C224.4,142.2 366.3,35.1 382.9,41.7 399.5,48.3 377.5,399.9 402.1,408.9 426.7,417.9 436.7,379.1 454.9,384.9 473.1,390.7 486.3,460.7 464.5,480.9 442.7,501.1 196.7,527.9 178.9,512.1 161.1,496.3 172.7,459.1 200.5,447.3 228.3,435.5 295.9,447.9 320.5,428.1 345.1,408.3 320.5,170.5&#xD;&#xA;311.5,165.1 302.5,159.7 237.9,231.5 207.5,253.1 z"   Stretch="Fill"  Fill="#FF40A800" Visibility="Collapsed"   />
+        	<Path x:Name="TWO" Data="M0,0 M600,600 M162.7,134.7 C237.9,115.5 375.5,53.1 418.7,107.5 461.9,161.9 173.9,421.1 201.1,446.7 228.3,472.3 460.3,413.1 471.5,425.9 482.7,438.7 474.7,483.5 457.1,501.1 439.5,518.7 124.3,555.5 97.1,533.1 69.9,510.7 194.16667,311.23333 242.7,200.3 201.63333,211.5 117.9,264.3 119.5,233.9 z" Fill="#FFFFDC00"     Stretch="Fill" Visibility="Collapsed"  />
+			<Path x:Name="THREE" Data="M0,0 M600,600 M139.2,59.2 C163.2,56 404.8,20.8 425.6,116.8 439.57053,181.27937 396.06983,208.31031 336,242.4 306.63496,259.06469 268.29862,272.70609 270.4,301.6 276.7842,389.3827 432,346 436.8,474.4 440.55065,574.72992 175,555.80004 141.9,539.50002 108.8,523.2 124.3,483.5 153.6,466.4 182.9,449.3 297.6,540.8 339.2,479.2 380.8,417.6 176,406.50822&#xD;&#xA;176,300 176,256 204.14041,245.17851 254.4,216.8 296.11671,193.24513 330.17597,174.64407 327.49998,153.1 321.6,105.6 128.59998,120.6 121.09999,108.3 113.6,96 115.2,62.4 139.2,59.2 z" Fill="#FFFF6D00"   Stretch="Fill" Visibility="Collapsed"  />
+
+
         </Canvas>
-		<!--<Grid x:Name="Battlfield" HorizontalAlignment="Left" VerticalAlignment="Top">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-				<RowDefinition Height="30"/>
-			</Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="30"/>
-            </Grid.ColumnDefinitions>
-		<local:Ghost HorizontalAlignment="Left"  />
-        </Grid>-->
-		<StackPanel Orientation="Horizontal">
-			<Button Content="DO" Click="Button_Click"/>
-		</StackPanel>
-	</StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="Collapsed">
+			<Button Content="DO" />
+            <Button></Button>
+
+        </StackPanel>
+        
+    </StackPanel>
 </Window>

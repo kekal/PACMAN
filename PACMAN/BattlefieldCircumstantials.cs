@@ -17,22 +17,22 @@ namespace PACMAN
         private static ushort _entranceIndex;
         private static ushort _exitIndex;
 
-        public static ushort _xEntrance;
-        public static ushort _yEntrance;
+        private static ushort _xEntrance;
+        private static ushort _yEntrance;
 
         //references collection
-        public static Brick[,] _fieldElementsArray;
-        public static List<Brick> _ghostsList;
-        public static List<Brick> _bricksList;
+        public static Brick[,] FieldElementsArray;
+        public static List<Brick> GhostsList;
+        public static List<Brick> BricksList;
 
 
         public static void GenerateField()
         {
             Size = (ushort)(MainWindow.Wm.Battlfield.Width / Squaresize);
 
-            _fieldElementsArray = new Brick[20, 20];
-            _bricksList = new List<Brick>();
-            _ghostsList = new List<Brick>();
+            FieldElementsArray = new Brick[Size, Size];
+            BricksList = new List<Brick>();
+            GhostsList = new List<Brick>();
 
             AddWalls();
 
@@ -137,13 +137,15 @@ namespace PACMAN
         private static void DefineEntranceIndex()
         {
             _entranceIndex = (ushort)(new Random()).Next(Size * 4 - 4);
-            for (; CornerCheck(_bricksList[_entranceIndex]); _entranceIndex = (ushort)(new Random()).Next(Size * 4 - 4)) ;
+            for (; CornerCheck(BricksList[_entranceIndex]); _entranceIndex = (ushort)(new Random()).Next(Size * 4 - 4))
+            {
+            }
 
 
             for (var j = 0; j < Size; j++)
                 for (var i = 0; i < Size; i++)
                 {
-                    if (_fieldElementsArray[i, j] != _bricksList[_entranceIndex]) continue;
+                    if (FieldElementsArray[i, j] != BricksList[_entranceIndex]) continue;
                     _xEntrance = (ushort)i;
                     _yEntrance = (ushort)j;
 
@@ -153,7 +155,9 @@ namespace PACMAN
         private static void DefineEscapeIndex()
         {
             _exitIndex = (ushort)(new Random()).Next(Size * 4 - 4);
-            for (; CornerCheck(_bricksList[_exitIndex]) || _exitIndex == _entranceIndex; _exitIndex = (ushort)(new Random()).Next(Size * 4 - 4)) ;
+            for (; CornerCheck(BricksList[_exitIndex]) || _exitIndex == _entranceIndex; _exitIndex = (ushort)(new Random()).Next(Size * 4 - 4))
+            {
+            }
         }
 
         private static void ClearApproach(int index)
@@ -162,8 +166,8 @@ namespace PACMAN
             var crophighCentreEdge = (ushort)(Size / 2 + 2);
             var cropSize = (ushort)(Size - 1);
 
-            var column = (ushort)(Canvas.GetLeft(_bricksList[index]) / Squaresize);
-            var row = (ushort)(Canvas.GetTop(_bricksList[index]) / Squaresize);
+            var column = (ushort)(Canvas.GetLeft(BricksList[index]) / Squaresize);
+            var row = (ushort)(Canvas.GetTop(BricksList[index]) / Squaresize);
 
             if (column == 0)
             {
@@ -247,31 +251,30 @@ namespace PACMAN
 
         private static bool CornerCheck(Brick brick)
         {
-            return (Canvas.GetLeft(brick) == 0 || Canvas.GetLeft(brick) == 19 * Squaresize) &&
-                   (Canvas.GetTop(brick) == 0 || Canvas.GetTop(brick) == 19 * Squaresize);
+            return (Math.Abs(Canvas.GetLeft(brick)) < 0.1 || Math.Abs(Canvas.GetLeft(brick) - 19 * Squaresize) < 0.1) &&
+                   (Math.Abs(Canvas.GetTop(brick)) < 0.1 || Math.Abs(Canvas.GetTop(brick) - 19 * Squaresize) < 0.1);
         }
 
         private static void AddBrick(ushort x, ushort y)
         {
-            if (_fieldElementsArray[x, y] != null) return;
+            if (FieldElementsArray[x, y] != null) return;
 
             var tempBrick = new Brick
             {
                 Width = Squaresize,
                 Height = Squaresize,
-                coordinates = new Point(x, y)
             };
 
             MainWindow.Wm.Battlfield.Children.Add(tempBrick);
             Canvas.SetLeft(tempBrick, Squaresize * x);
             Canvas.SetTop(tempBrick, Squaresize * y);
-            _fieldElementsArray[x, y] = tempBrick;
-            _bricksList.Add(tempBrick);
+            FieldElementsArray[x, y] = tempBrick;
+            BricksList.Add(tempBrick);
         }
 
         private static Ghost AddGhost(ushort x, ushort y, string command = "")
         {
-            if (_fieldElementsArray[x, y] != null) return null;
+            if (FieldElementsArray[x, y] != null) return null;
             Ghost tempGhost;
             try
             {
@@ -309,9 +312,8 @@ namespace PACMAN
             Canvas.SetLeft(tempGhost, Squaresize * x);
             Canvas.SetTop(tempGhost, Squaresize * y);
 
-            tempGhost.coordinates = new Point(x, y);
-            _fieldElementsArray[x, y] = tempGhost;
-            _ghostsList.Add(tempGhost);
+            FieldElementsArray[x, y] = tempGhost;
+            GhostsList.Add(tempGhost);
             return tempGhost;
         }
 
@@ -321,7 +323,7 @@ namespace PACMAN
             {
                 for (ushort i = 7; i < 12; i++)
                 {
-                    if (_fieldElementsArray[i, j] != null) continue;
+                    if (FieldElementsArray[i, j] != null) continue;
                     return AddGhost(i, j, type);
                 }
             }
@@ -330,14 +332,14 @@ namespace PACMAN
 
         internal static void AddPuckman()
         {
-            if (_fieldElementsArray[_xEntrance, _yEntrance] != null)
+            if (FieldElementsArray[_xEntrance, _yEntrance] != null)
             {
                 MessageBox.Show(_xEntrance + ", " + _yEntrance + " contains:\n" +
-                                _fieldElementsArray[_xEntrance, _yEntrance]);
+                                FieldElementsArray[_xEntrance, _yEntrance]);
                 throw new IndexOutOfRangeException();
             }
 
-            var temp = new Puckman()
+            var temp = new Puckman
             {
                 Width = Squaresize,
                 Height = Squaresize
@@ -346,53 +348,96 @@ namespace PACMAN
             MainWindow.Wm.Battlfield.Children.Add(temp);
             Canvas.SetLeft(temp, Squaresize * _xEntrance);
             Canvas.SetTop(temp, Squaresize * _yEntrance);
-            _fieldElementsArray[_xEntrance, _yEntrance] = temp;
+            FieldElementsArray[_xEntrance, _yEntrance] = temp;
 
             Puckman = temp;
         }
 
+        public static void AddBoost()
+        {
+
+            var temp = new Boost
+            {
+                Width = Squaresize,
+                Height = Squaresize
+            };
+
+            var rnd = new Random();
+
+            for (; ; )
+            {
+                var nX = (ushort)rnd.Next(18);
+                var nY = (ushort)rnd.Next(18);
+
+                if (FieldElementsArray[nX, nY] != null) continue;
+
+                MainWindow.Wm.Battlfield.Children.Add(temp);
+                Canvas.SetLeft(temp, Squaresize * nX);
+                Canvas.SetTop(temp, Squaresize * nY);
+                FieldElementsArray[nX, nY] = temp;
+                break;
+            }
+        }
+
         public static void MoveBattlefieldElement(ushort x1, ushort y1, ushort x2, ushort y2)
         {
-            if (_fieldElementsArray[x2, y2] != null)
+            if (x1 == x2 && y1 == y2)
             {
-                throw new ArgumentException();
+                return;
             }
 
-            _fieldElementsArray[x2, y2] = _fieldElementsArray[x1, y1];
-            _fieldElementsArray[x1, y1] = null;
-            return;
+            FieldElementsArray[x2, y2] = FieldElementsArray[x1, y1];
+            FieldElementsArray[x1, y1] = null;
         }
 
-        private static void RemoveElementFromField(ushort x, ushort y)
+        public static void RemoveElementFromField(ushort x, ushort y)
         {
-            if (_fieldElementsArray[x, y] == null) return;
+            if (FieldElementsArray[x, y] == null) return;
 
-            MainWindow.Wm.Battlfield.Children.Remove(_fieldElementsArray[x, y]);
+            MainWindow.Wm.Battlfield.Children.Remove(FieldElementsArray[x, y]);
 
-            if (_bricksList.Contains(_fieldElementsArray[x, y])) _bricksList.Remove(_fieldElementsArray[x, y]);
-            if (_ghostsList.Contains(_fieldElementsArray[x, y])) _ghostsList.Remove(_fieldElementsArray[x, y]);
+            if (BricksList.Contains(FieldElementsArray[x, y])) BricksList.Remove(FieldElementsArray[x, y]);
+            if (GhostsList.Contains(FieldElementsArray[x, y])) GhostsList.Remove(FieldElementsArray[x, y]);
 
-            _bricksList.Remove(_fieldElementsArray[x, y]);
-            _fieldElementsArray[x, y] = null;
+            FieldElementsArray[x, y] = null;
         }
 
-        public static void RemoveElementFromField(Brick brick)
-        {
-            RemoveElementFromField((ushort)Grid.GetColumn(brick), (ushort)Grid.GetRow(brick));
-        }
+      
 
-        public static Point getCoordinates(Brick element)
+        public static Point GetCoordinates(Brick element)
         {
-            for (var j = 0; j < _fieldElementsArray.GetLength(0); j++)
+            for (var j = 0; j < FieldElementsArray.GetLength(0); j++)
             {
-                for (var i = 0; i < _fieldElementsArray.GetLength(1); i++)
+                for (var i = 0; i < FieldElementsArray.GetLength(1); i++)
                 {
-                    if (_fieldElementsArray[i, j] != element) continue;
-
-                    return new Point(i, j);
+                    if (FieldElementsArray[i, j] == element)
+                    {
+                        return new Point(i, j);
+                    }
                 }
             }
             return new Point(-1, -1);
+        }
+
+        public static double FindDirectDistance(Brick brick1, Brick brick2)
+        {
+            double x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+            for (var j = 0; j < FieldElementsArray.GetLength(1); j++)
+                for (var i = 0; i < FieldElementsArray.GetLength(0); i++)
+                {
+                    if (FieldElementsArray[i, j] == brick1)
+                    {
+                        x1 = i;
+                        y1 = j;
+                    }
+
+                    if (FieldElementsArray[i, j] == brick2)
+                    {
+                        x2 = i;
+                        y2 = j;
+                    }
+                }
+            return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
         }
     }
 }

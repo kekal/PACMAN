@@ -29,8 +29,7 @@ namespace PACMAN
 
             Search();
 
-
-            RevealPath();
+            RevealPath(_finish);
         }
 
 
@@ -45,8 +44,10 @@ namespace PACMAN
 
                 if (_candidates.Count < 1)
                 {
-                    MessageBox.Show("Packman is unreachable");
-                    throw new PackmanUnreachable();
+                    return;
+                    
+                    //MessageBox.Show("Packman is unreachable");
+                    //throw new PackmanUnreachable();
                 }
 
                 _closed = _closed.Concat(_border).ToDictionary(x => x.Key, x => x.Value);
@@ -86,8 +87,10 @@ namespace PACMAN
                         (newCandidates[i].Y >= BattlefieldCircumstantials.Size) ||
                         (newCandidates[i].X >= BattlefieldCircumstantials.Size) ||
                         (_border.ContainsKey(newCandidates[i])) ||
-                        (BattlefieldCircumstantials._bricksList.Contains(
-                            BattlefieldCircumstantials._fieldElementsArray[(int)(newCandidates[i].X), (int)newCandidates[i].Y])) ||
+                        (BattlefieldCircumstantials.GhostsList.Contains(
+                            BattlefieldCircumstantials.FieldElementsArray[(int)(newCandidates[i].X), (int)newCandidates[i].Y])) ||
+                        (BattlefieldCircumstantials.BricksList.Contains(
+                            BattlefieldCircumstantials.FieldElementsArray[(int)(newCandidates[i].X), (int)newCandidates[i].Y])) ||
                         (_closed.ContainsKey(newCandidates[i]))
                         )
                     {
@@ -101,9 +104,9 @@ namespace PACMAN
             }
         }
 
-        private void RevealPath()
+        private void RevealPath(Point finish)
         {
-            Path = new List<Point> { _finish };
+            Path = new List<Point> { finish };
 
             for (; ; )
             {
@@ -113,7 +116,7 @@ namespace PACMAN
                     new Point(Path.Last().X, Path.Last().Y + 1),
                     new Point(Path.Last().X - 1, Path.Last().Y),
                     new Point(Path.Last().X, Path.Last().Y - 1)
-                };
+                };            
 
                 if (around.Contains(_start))
                 {
@@ -121,13 +124,14 @@ namespace PACMAN
                     return;
                 }
 
-                Path.Add(around.Where(point => _closed.ContainsKey(point))
-                        .ToDictionary(t => t, t => _closed[t])
-                        .Aggregate((l, r) => l.Value < r.Value ? l : r)
-                        .Key);
+                var verifiedNodes = around.Where(point => _closed.ContainsKey(point)).ToDictionary(t => t, t => _closed[t]);
+                if (verifiedNodes.Count < 1)
+                {
+                    return;
+                }
+
+                Path.Add(verifiedNodes.Aggregate((l, r) => l.Value < r.Value ? l : r).Key);
             }
         }
     }
-
-    class PackmanUnreachable : Exception { }
 }

@@ -1,15 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace PACMAN
 {
     public partial class MainWindow
     {
-
+        
         public static MainWindow Wm;
         public MainWindow()
         {
@@ -17,31 +13,41 @@ namespace PACMAN
             Wm = this;
             BattlefieldCircumstantials.GenerateField();
 
-            
+            //fillNimbers();
+
+            Init();
         }
 
-       
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private static void Init()
         {
-            ((Button) sender).IsEnabled = false;
-            var templist = new[] {"red"/*, "yellow"*/};
-
-            foreach (var s in templist.Where(s => BattlefieldCircumstantials.AddGhostToCastle(s) == null))
-            {
-                //MessageBox.Show("Can't add to proper place ghost " + s);
-            }
-
             BattlefieldCircumstantials.AddPuckman();
 
+            BattlefieldCircumstantials.AddBoost();
+            BattlefieldCircumstantials.AddBoost();
 
-            ((Ghost) BattlefieldCircumstantials._ghostsList[0]).MoveDecision();
 
-            ((Button)sender).IsEnabled = true;
-            
-            
+
+            var ghosts = new[] { "red", "yellow" };
+
+            foreach (var ghost in ghosts.Where(s => BattlefieldCircumstantials.AddGhostToCastle(s) == null))
+            {
+                MessageBox.Show("Can't add to proper place ghost " + ghost);
+            }
+
+            BattlefieldCircumstantials.Puckman.MoveDecision();
+
+            ((Ghost)BattlefieldCircumstantials.GhostsList[0]).MoveDecision();
+            ((Ghost)BattlefieldCircumstantials.GhostsList[1]).MoveDecision();
+
+       
         }
 
-        
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (BattlefieldCircumstantials.Puckman != null)
+            {
+                BattlefieldCircumstantials.Puckman.MoveDefine(e);
+            }
+        }
     }
 }

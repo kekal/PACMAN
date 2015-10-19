@@ -13,14 +13,11 @@ using System.Windows.Shapes;
 
 namespace PACMAN
 {
-	/// <summary>
-	/// Interaction logic for Ghost1.xaml
-	/// </summary>
-	public partial class Ghost1 : UserControl
+	public partial class CherryControl
 	{
-		public Ghost1()
+		public CherryControl()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 		}
 	}
 }
