@@ -280,28 +280,28 @@ namespace PACMAN
 
         internal void MoveDefine(KeyEventArgs args)
         {
-            _newHorisontalDirection = HorisontalDirection.Stay;
-            _newVerticalDirection = VerticalDirection.Stay;
             switch (args.Key)
             {
                 case Key.Up:
                     _newVerticalDirection = VerticalDirection.Up;
+                    _newHorisontalDirection = HorisontalDirection.Stay;
                     break;
 
                 case Key.Down:
                     _newVerticalDirection = VerticalDirection.Down;
+                    _newHorisontalDirection = HorisontalDirection.Stay;
                     break;
 
                 case Key.Left:
+                    _newVerticalDirection = VerticalDirection.Stay;
                     _newHorisontalDirection = HorisontalDirection.Left;
                     break;
 
                 case Key.Right:
+                    _newVerticalDirection = VerticalDirection.Stay;
                     _newHorisontalDirection = HorisontalDirection.Right;
                     break;
             }
-
-
         }
     }
 }
