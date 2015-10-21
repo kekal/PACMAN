@@ -1,19 +1,15 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 
 namespace PACMAN
 {
     public partial class MainWindow
-    {
-        
+    { 
         public static MainWindow Wm;
         public MainWindow()
         {
             InitializeComponent();
             Wm = this;
             BattlefieldCircumstantials.GenerateField();
-
-            //fillNimbers();
 
             Init();
         }
@@ -22,24 +18,10 @@ namespace PACMAN
         {
             BattlefieldCircumstantials.AddPuckman();
 
-            BattlefieldCircumstantials.AddBoost();
-            BattlefieldCircumstantials.AddBoost();
+            BattlefieldCircumstantials.AddCherry();
+            BattlefieldCircumstantials.AddCherry();
 
-
-
-            var ghosts = new[] { "red", "yellow" };
-
-            foreach (var ghost in ghosts.Where(s => BattlefieldCircumstantials.AddGhostToCastle(s) == null))
-            {
-                MessageBox.Show("Can't add to proper place ghost " + ghost);
-            }
-
-            BattlefieldCircumstantials.Puckman.MoveDecision();
-
-            ((Ghost)BattlefieldCircumstantials.GhostsList[0]).MoveDecision();
-            ((Ghost)BattlefieldCircumstantials.GhostsList[1]).MoveDecision();
-
-       
+            BattlefieldCircumstantials.AddGhosts();
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -48,6 +30,25 @@ namespace PACMAN
             {
                 BattlefieldCircumstantials.Puckman.MoveDefine(e);
             }
+        }
+
+        public void PlayWin()
+        {
+            foreach (var child in Battlfield.Children)
+            {
+                ((UIElement)child).Visibility = Visibility.Collapsed;
+            }
+            Win.Visibility = Visibility.Visible;
+        }
+
+        public void PlayDeath()
+        {
+
+            foreach (var child in Battlfield.Children)
+            {
+                ((UIElement)child).Visibility = Visibility.Collapsed;
+            }
+            Death.Visibility = Visibility.Visible;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
@@ -10,13 +9,13 @@ namespace PACMAN
         private readonly Point _start;
         private readonly Point _finish;
 
-        public List<Point> Path;
+        internal List<Point> Path;
 
         private Dictionary<Point, int> _closed;
         private Dictionary<Point, int> _border;
         private readonly Dictionary<Point, int> _candidates;
 
-        public PathFind(Point start, Point finish)
+        internal PathFind(Point start, Point finish)
         {
             _closed = new Dictionary<Point, int>();
             _border = new Dictionary<Point, int>();
@@ -45,18 +44,12 @@ namespace PACMAN
                 if (_candidates.Count < 1)
                 {
                     return;
-                    
-                    //MessageBox.Show("Packman is unreachable");
-                    //throw new PackmanUnreachable();
                 }
 
                 _closed = _closed.Concat(_border).ToDictionary(x => x.Key, x => x.Value);
-
                 _border.Clear();
 
-
                 _border = _border.Concat(_candidates).ToDictionary(x => x.Key, x => x.Value);
-
                 _candidates.Clear();
 
 

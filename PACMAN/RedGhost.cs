@@ -6,14 +6,14 @@ namespace PACMAN
     {
         private static bool _isInstantiated;
 
-        public RedGhost()
+        internal RedGhost()
         {
             if (_isInstantiated) throw new AlreadyInstatiated();
 
             Name = "RedGhost";
             var brush = new SolidColorBrush((Color) ColorConverter.ConvertFromString("Red"));
-            pathData.Stroke = brush;
-            pathData.Fill = brush;
+            PathData.Stroke = brush;
+            PathData.Fill = brush;
 
             _isInstantiated = true;
         }

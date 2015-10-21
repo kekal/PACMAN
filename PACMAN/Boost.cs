@@ -11,7 +11,7 @@ namespace PACMAN
 {
     class Boost : Brick
     {
-        public Boost()
+        internal Boost()
         {
             LayoutRoot.RenderTransformOrigin = new Point(0.5, 0.5);
             LayoutRoot.RenderTransform = new ScaleTransform(1, 1.27);
@@ -20,18 +20,18 @@ namespace PACMAN
             Height = BattlefieldCircumstantials.Squaresize;
             
 
-            pathData.Name="Sticks";
-            pathData.Data =
+            PathData.Name="Sticks";
+            PathData.Data =
                 Geometry.Parse(
                     "M0,0 M215,274 M62.9,161.7 C62.9,161.7 143.915,98.666 148.5,68.1 153.085,37.533998 181.752,152.988 162.9,183.3");
-            pathData.HorizontalAlignment = HorizontalAlignment.Left;
-            pathData.VerticalAlignment = VerticalAlignment.Top;
-            pathData.Stretch = Stretch.Fill;
-            pathData.RenderTransformOrigin = new Point(0.5, 0.5);
-            pathData.Stroke = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#FF7AA20D"));
-            pathData.SnapsToDevicePixels = true;
-            pathData.StrokeStartLineCap = PenLineCap.Round;
-            pathData.StrokeEndLineCap = PenLineCap.Round;
+            PathData.HorizontalAlignment = HorizontalAlignment.Left;
+            PathData.VerticalAlignment = VerticalAlignment.Top;
+            PathData.Stretch = Stretch.Fill;
+            PathData.RenderTransformOrigin = new Point(0.5, 0.5);
+            PathData.Stroke = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#FF7AA20D"));
+            PathData.SnapsToDevicePixels = true;
+            PathData.StrokeStartLineCap = PenLineCap.Round;
+            PathData.StrokeEndLineCap = PenLineCap.Round;
 
 
             var leaf = new Path
@@ -82,7 +82,6 @@ namespace PACMAN
             LayoutRoot.Children.Add(leaf);
             LayoutRoot.Children.Add(rCherry);
             LayoutRoot.Children.Add(lCherry);
-
 
             Panel.SetZIndex(this, 1);
         }

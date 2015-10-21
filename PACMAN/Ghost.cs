@@ -12,13 +12,13 @@ namespace PACMAN
     class Ghost : Brick
     {
         private readonly double _defaultSpeed;
-
-        public Ghost()
+        
+        internal Ghost()
         {
             _defaultSpeed = 1.0 / 300;
 
             SnapsToDevicePixels = true;
-            pathData.Data = Geometry.Parse(
+            PathData.Data = Geometry.Parse(
                     "M0,100 L0,100 C16,66 8,0 50,0 92,0 83,67 100,100 M100,100 C91,91 91,80 75,80 57,80 67,100 50,100 33,100 40,80 25,80 9,80 0,100 0,100"
                     );
 
@@ -27,8 +27,8 @@ namespace PACMAN
                 Data = Geometry.Parse(
                     "M0,0 M100,100 M33,51 C41,51 47,45 47,44 47,43 41,36 33,36 26,36 19,42 19,44 18.764171,46 27,51 33,51 z M66,51 C74,51 80,45 80,44 80,42 74,36 66,36 59,36 51,43 51,44 51,45 60,51 66,51 z"
                     ),
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Black")),
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White")),
+                Stroke = new SolidColorBrush(BattlefieldCircumstantials.BlackColor),
+                Fill = new SolidColorBrush(BattlefieldCircumstantials.WhiteColor),
                 StrokeThickness = 0.2,
                 Stretch = Stretch.Fill
             };
@@ -36,7 +36,7 @@ namespace PACMAN
             var pupil1 = new Ellipse
             {
                 SnapsToDevicePixels = false,
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Black")),
+                Fill = new SolidColorBrush(BattlefieldCircumstantials.BlackColor),
                 StrokeThickness = 0,
                 Width = 1.5,
                 Height = 1.5,
@@ -49,7 +49,7 @@ namespace PACMAN
             var pupil2 = new Ellipse
             {
                 SnapsToDevicePixels = false,
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Black")),
+                Fill = new SolidColorBrush(BattlefieldCircumstantials.BlackColor),
                 StrokeThickness = 0,
                 Width = 1.5,
                 Height = 1.5,
@@ -87,7 +87,7 @@ namespace PACMAN
             #endregion
         }
 
-        public void CreatureMovement(Point goal)
+        private void CreatureMovement(Point goal)
         {
             const ushort square = BattlefieldCircumstantials.Squaresize;
 
@@ -118,7 +118,6 @@ namespace PACMAN
                 From = oldY,
                 To = newY
             };
-            //new Point(oldDiscreteX, oldDiscreteY);
 
             BattlefieldCircumstantials.MoveBattlefieldElement(
                 (ushort)Math.Round(oldDiscreteX),
@@ -128,7 +127,6 @@ namespace PACMAN
 
             var sb = new Storyboard();
 
-            sb.Name = "GhostAnimation";
             sb.Children.Add(xMovementAnimation);
             sb.Children.Add(yMovementAnimation);
             sb.Completed +=
@@ -145,18 +143,21 @@ namespace PACMAN
             sb.Begin();
         }
 
-        public void MoveDecision()
+        internal void MoveDecision()
         {
+            MainWindow.Wm.Calls.Content = BattlefieldCircumstantials.FindDirectDistance(this, BattlefieldCircumstantials.Puckman);
+
+            if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
+            
             if (BattlefieldCircumstantials.FindDirectDistance(this, BattlefieldCircumstantials.Puckman) < 1.2)
             {
-                //===================================================================
+                MainWindow.Wm.PlayDeath();
                 return;
             }
 
             var currentCoordinates = BattlefieldCircumstantials.GetCoordinates(this);
             var puckmanCoordinates = BattlefieldCircumstantials.GetCoordinates(BattlefieldCircumstantials.Puckman);
 
-            if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
 
             var ghostWay = new PathFind(currentCoordinates, puckmanCoordinates);
 
@@ -178,10 +179,5 @@ namespace PACMAN
                 CreatureMovement(currentCoordinates);
             }
         }
-    }
-
-    internal class AlreadyInstatiated : Exception
-    {
-
     }
 }

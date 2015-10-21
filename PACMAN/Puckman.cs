@@ -23,6 +23,16 @@ namespace PACMAN
         Down = 1,
     }
 
+    enum targetType
+    {
+        Null,
+        Brick,
+        Cherry,
+        Exit,
+        Entrance,
+        Error
+    }
+
     class Puckman : Ghost
     {
         private double _defaultSpeed;
@@ -33,10 +43,8 @@ namespace PACMAN
         private HorisontalDirection _newHorisontalDirection;
         private VerticalDirection _newVerticalDirection;
 
-
-        public Puckman()
+        internal Puckman()
         {
-            //Visibility = Visibility.Hidden;
             _defaultSpeed = 1.0 / 200;
             _newHorisontalDirection = HorisontalDirection.Stay;
             _newVerticalDirection = VerticalDirection.Stay;
@@ -48,7 +56,7 @@ namespace PACMAN
 
             LayoutRoot.Children.Add(new Ellipse
             {
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Yellow"))
+                Fill = new SolidColorBrush(BattlefieldCircumstantials.YellowColor)
             });
 
             ChawAnimation();
@@ -57,18 +65,18 @@ namespace PACMAN
         private void ChawAnimation()
         {
 
-            pathData.StrokeThickness = 0;
-            pathData.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Black"));
-            pathData.Data = Geometry.Parse("M0,0 M100,100 M50,50 L101,25 101,75");
-            pathData.RenderTransformOrigin = new Point(0.5, 0.5);
+            PathData.StrokeThickness = 0;
+            PathData.Fill = new SolidColorBrush(BattlefieldCircumstantials.BlackColor);
+            PathData.Data = Geometry.Parse("M0,0 M100,100 M50,50 L101,25 101,75");
+            PathData.RenderTransformOrigin = new Point(0.5, 0.5);
 
-            Panel.SetZIndex(pathData, 1);
+            Panel.SetZIndex(PathData, 1);
             Panel.SetZIndex(this, 1);
 
             var translation = new ScaleTransform(1, 1);
             var translationName = "Chawing" + translation.GetHashCode();
             RegisterName(translationName, translation);
-            pathData.RenderTransform = translation;
+            PathData.RenderTransform = translation;
 
             var anim = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromMilliseconds(200)))
             {
@@ -89,52 +97,107 @@ namespace PACMAN
 
         }
 
-        public void MoveDecision()
+        internal new void MoveDecision()
         {
-            var currentCoordinates = BattlefieldCircumstantials.GetCoordinates(this);
-
-            var newTarget = BattlefieldCircumstantials.FieldElementsArray[
-                (int) (currentCoordinates.X) + (int) _newHorisontalDirection,
-                (int) (currentCoordinates).Y + (int) _newVerticalDirection];
-
-            var oldTarget = BattlefieldCircumstantials.FieldElementsArray[
-                (int) (currentCoordinates.X) + (int) _currentHorisontalDirection,
-                (int) (currentCoordinates).Y + (int) _currentVerticalDirection];
-
-
-            if (newTarget == null)
-            {
-                _currentHorisontalDirection = _newHorisontalDirection;
-                _currentVerticalDirection = _newVerticalDirection;
-            }
-            else if (oldTarget == null)
-            {
-                
-            }
-            else if (newTarget.GetType() == typeof(Boost))
-            {
-                _currentHorisontalDirection = _newHorisontalDirection;
-                _currentVerticalDirection = _newVerticalDirection;
-                ApplyBoost((ushort)(currentCoordinates.X + (int)_newHorisontalDirection), (ushort)(currentCoordinates.Y + (int)_newVerticalDirection));
-
-            }
-            else if (oldTarget.GetType() == typeof(Boost))
-            {
-                ApplyBoost((ushort)(currentCoordinates.X + (int)_currentHorisontalDirection), (ushort)(currentCoordinates.Y + (int)_currentVerticalDirection));
-            }
-
-            else
-            {
-                _currentHorisontalDirection = HorisontalDirection.Stay;
-                _currentVerticalDirection = VerticalDirection.Stay;
-            }
-
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
 
-            var newPoint = new Point(currentCoordinates.X + (int)_currentHorisontalDirection,
-                currentCoordinates.Y + (int)_currentVerticalDirection);
+            var currentCoordinates = BattlefieldCircumstantials.GetCoordinates(this);
 
-            CreatureMovement(newPoint);
+            var coordX = (int)currentCoordinates.X;
+            var coordY = (int)currentCoordinates.Y;
+
+            var thisSquareType = DefineTargetType(coordX, coordY);
+
+            if (thisSquareType == targetType.Exit)
+            {
+                MainWindow.Wm.PlayWin();
+                return;
+            }
+
+            if (thisSquareType == targetType.Entrance)
+            {
+                if (_newHorisontalDirection == _currentHorisontalDirection &&
+                    _newVerticalDirection == _currentVerticalDirection)
+                {
+                    CreatureMovement(currentCoordinates);
+                    return;
+                }
+            }
+
+            var newCoordX = (int)currentCoordinates.X + (int)_newHorisontalDirection;
+            var newCoordY = (int)currentCoordinates.Y + (int)_newVerticalDirection;
+
+            var unPredictibleTargetType = DefineTargetType(newCoordX, newCoordY);
+
+            var oldCoordX = (int)currentCoordinates.X + (int)_currentHorisontalDirection;
+            var oldCoordY = (int)currentCoordinates.Y + (int)_currentVerticalDirection;
+
+            var predictibleTargetType = DefineTargetType(oldCoordX, oldCoordY);
+
+            if (unPredictibleTargetType == targetType.Null || unPredictibleTargetType == targetType.Entrance || unPredictibleTargetType == targetType.Exit)
+            {
+                _currentHorisontalDirection = _newHorisontalDirection;
+                _currentVerticalDirection = _newVerticalDirection;
+                CreatureMovement(new Point(newCoordX, newCoordY));
+                return;
+            }
+
+            if (unPredictibleTargetType == targetType.Cherry)
+            {
+                _currentHorisontalDirection = _newHorisontalDirection;
+                _currentVerticalDirection = _newVerticalDirection;
+                ApplyBoost((ushort)newCoordX, (ushort)newCoordY);
+                CreatureMovement(new Point(newCoordX, newCoordY));
+                return;
+            }
+
+            if (predictibleTargetType == targetType.Null || predictibleTargetType == targetType.Entrance || predictibleTargetType == targetType.Exit)
+            {
+                CreatureMovement(new Point(oldCoordX, oldCoordY));
+                return;
+            }
+
+            if (predictibleTargetType == targetType.Cherry)
+            {
+                ApplyBoost((ushort)oldCoordX, (ushort)oldCoordY);
+                CreatureMovement(new Point(newCoordX, newCoordY));
+                return;
+            }
+
+
+            CreatureMovement(currentCoordinates);
+        }
+
+        private targetType DefineTargetType(int x, int y)
+        {
+            if (x >= BattlefieldCircumstantials.Size || x < 0 || y >= BattlefieldCircumstantials.Size || y < 0)
+            {
+                return targetType.Error;
+            }
+
+            var target = BattlefieldCircumstantials.FieldElementsArray[x, y];
+
+            if (BattlefieldCircumstantials.BricksList.Contains(target))
+            {
+                return targetType.Brick;
+            }
+
+            if (target != null && target.GetType() == typeof(Boost))
+            {
+                return targetType.Cherry;
+            }
+
+            if (Math.Abs(x - BattlefieldCircumstantials.XExit) < 0.2 && Math.Abs(y - BattlefieldCircumstantials.YExit) < 0.2)
+            {
+                return targetType.Exit;
+            }
+
+            if (Math.Abs(x - BattlefieldCircumstantials.XEntrance) < 0.2 && Math.Abs(y - BattlefieldCircumstantials.YEntrance) < 0.2)
+            {
+                return targetType.Entrance;
+            }
+
+            return targetType.Null;
         }
 
         private void ApplyBoost(ushort x, ushort y)
@@ -146,7 +209,7 @@ namespace PACMAN
             var tempTimer = new Timer(3000)
             {
                 AutoReset = false
-            
+
             };
             tempTimer.Elapsed += delegate
             {
@@ -158,6 +221,8 @@ namespace PACMAN
 
         private void CreatureMovement(Point goal)
         {
+            
+
             const ushort square = BattlefieldCircumstantials.Squaresize;
 
             var oldDiscreteX = Canvas.GetLeft(this) / square;
@@ -172,7 +237,7 @@ namespace PACMAN
             var newDiscreteX = goal.X;
             var newdiscreteY = goal.Y;
 
-            var dur = new Duration(TimeSpan.FromMilliseconds(1/_defaultSpeed));
+            var dur = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
 
             var xMovementAnimation = new DoubleAnimation
             {
@@ -197,7 +262,6 @@ namespace PACMAN
 
             var sb = new Storyboard();
 
-            sb.Name = "GhostAnimation";
             sb.Children.Add(xMovementAnimation);
             sb.Children.Add(yMovementAnimation);
             sb.Completed +=
@@ -214,29 +278,25 @@ namespace PACMAN
             sb.Begin();
         }
 
-        public void MoveDefine(KeyEventArgs args)
+        internal void MoveDefine(KeyEventArgs args)
         {
             _newHorisontalDirection = HorisontalDirection.Stay;
             _newVerticalDirection = VerticalDirection.Stay;
             switch (args.Key)
             {
                 case Key.Up:
-                    //MessageBox.Show("Up");
                     _newVerticalDirection = VerticalDirection.Up;
                     break;
 
                 case Key.Down:
-                    //MessageBox.Show("Down");
                     _newVerticalDirection = VerticalDirection.Down;
                     break;
 
                 case Key.Left:
-                    //MessageBox.Show("Left");
                     _newHorisontalDirection = HorisontalDirection.Left;
                     break;
 
                 case Key.Right:
-                    //MessageBox.Show("Right");
                     _newHorisontalDirection = HorisontalDirection.Right;
                     break;
             }
