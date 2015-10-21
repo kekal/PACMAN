@@ -452,22 +452,12 @@ namespace PACMAN
 
         internal static double FindDirectDistance(Brick brick1, Brick brick2)
         {
-            double x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-            for (var j = 0; j < FieldElementsArray.GetLength(1); j++)
-                for (var i = 0; i < FieldElementsArray.GetLength(0); i++)
-                {
-                    if (FieldElementsArray[i, j] == brick1)
-                    {
-                        x1 = i;
-                        y1 = j;
-                    }
 
-                    if (FieldElementsArray[i, j] == brick2)
-                    {
-                        x2 = i;
-                        y2 = j;
-                    }
-                }
+            var x1 = Canvas.GetLeft(brick1);
+            var y1 = Canvas.GetTop(brick1);
+            var x2 = Canvas.GetLeft(brick2);
+            var y2 = Canvas.GetTop(brick2);
+
             return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
         }
     }
