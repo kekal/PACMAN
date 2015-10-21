@@ -11,7 +11,7 @@ namespace PACMAN
 {
     class Ghost : Brick
     {
-        private readonly double _defaultSpeed;
+        private double _defaultSpeed;
         
         internal Ghost()
         {
@@ -176,6 +176,11 @@ namespace PACMAN
                 }
                 CreatureMovement(currentCoordinates);
             }
+        }
+
+        internal void Stop()
+        {
+            _defaultSpeed = 1.0 / 1000000;
         }
     }
 }

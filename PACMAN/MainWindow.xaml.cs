@@ -32,23 +32,29 @@ namespace PACMAN
             }
         }
 
-        public void PlayWin()
+        internal void PlayWin()
         {
-            foreach (var child in Battlfield.Children)
-            {
-                ((UIElement)child).Visibility = Visibility.Collapsed;
-            }
+            GameOver();
             Win.Visibility = Visibility.Visible;
         }
 
-        public void PlayDeath()
+        internal void PlayDeath()
         {
+            GameOver();
+            Death.Visibility = Visibility.Visible;
+        }
+
+        private void GameOver()
+        {
+            foreach (var ghost in BattlefieldCircumstantials.GhostsList)
+            {
+                ((Ghost)ghost).Stop();
+            }
 
             foreach (var child in Battlfield.Children)
             {
                 ((UIElement)child).Visibility = Visibility.Collapsed;
             }
-            Death.Visibility = Visibility.Visible;
         }
     }
 }
