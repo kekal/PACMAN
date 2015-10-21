@@ -54,16 +54,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AlreadyInstatiated.cs" />
     <Compile Include="Boost.cs" />
     <Compile Include="PathFind.cs" />
     <Compile Include="Puckman.cs" />
     <Compile Include="RedGhost.cs" />
     <Compile Include="YellowGhost.cs" />
     <Page Include="Brick.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CherryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -80,9 +77,6 @@
       <DependentUpon>Brick.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ghost.cs" />
-    <Compile Include="CherryControl.xaml.cs">
-      <DependentUpon>CherryControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -105,6 +99,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
