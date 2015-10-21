@@ -11,7 +11,7 @@
 	<Grid x:Name="LayoutRoot">
         <Path x:Name="PathData" Data="M0,0 L100,100 M100,0 L0,100 M0,0 L100,0 100,100 0,100 z" Stretch="Fill"   >
             <Path.Stroke>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GradientActiveCaptionColorKey}}"/>
+                <SolidColorBrush Color="#FFB9D1EA"/>
             </Path.Stroke>
         </Path>
     </Grid>
