@@ -23,7 +23,7 @@ namespace PACMAN
         Down = 1,
     }
 
-    enum targetType
+    enum TargetType
     {
         Null,
         Brick,
@@ -108,13 +108,13 @@ namespace PACMAN
 
             var thisSquareType = DefineTargetType(coordX, coordY);
 
-            if (thisSquareType == targetType.Exit)
+            if (thisSquareType == TargetType.Exit)
             {
                 MainWindow.Wm.PlayWin();
                 return;
             }
 
-            if (thisSquareType == targetType.Entrance)
+            if (thisSquareType == TargetType.Entrance)
             {
                 if (_newHorisontalDirection == _currentHorisontalDirection &&
                     _newVerticalDirection == _currentVerticalDirection)
@@ -134,7 +134,7 @@ namespace PACMAN
 
             var predictibleTargetType = DefineTargetType(oldCoordX, oldCoordY);
 
-            if (unPredictibleTargetType == targetType.Null || unPredictibleTargetType == targetType.Entrance || unPredictibleTargetType == targetType.Exit)
+            if (unPredictibleTargetType == TargetType.Null || unPredictibleTargetType == TargetType.Entrance || unPredictibleTargetType == TargetType.Exit)
             {
                 _currentHorisontalDirection = _newHorisontalDirection;
                 _currentVerticalDirection = _newVerticalDirection;
@@ -142,7 +142,7 @@ namespace PACMAN
                 return;
             }
 
-            if (unPredictibleTargetType == targetType.Cherry)
+            if (unPredictibleTargetType == TargetType.Cherry)
             {
                 _currentHorisontalDirection = _newHorisontalDirection;
                 _currentVerticalDirection = _newVerticalDirection;
@@ -151,13 +151,13 @@ namespace PACMAN
                 return;
             }
 
-            if (predictibleTargetType == targetType.Null || predictibleTargetType == targetType.Entrance || predictibleTargetType == targetType.Exit)
+            if (predictibleTargetType == TargetType.Null || predictibleTargetType == TargetType.Entrance || predictibleTargetType == TargetType.Exit)
             {
                 CreatureMovement(new Point(oldCoordX, oldCoordY));
                 return;
             }
 
-            if (predictibleTargetType == targetType.Cherry)
+            if (predictibleTargetType == TargetType.Cherry)
             {
                 ApplyBoost((ushort)oldCoordX, (ushort)oldCoordY);
                 CreatureMovement(new Point(newCoordX, newCoordY));
@@ -168,36 +168,36 @@ namespace PACMAN
             CreatureMovement(currentCoordinates);
         }
 
-        private targetType DefineTargetType(int x, int y)
+        private TargetType DefineTargetType(int x, int y)
         {
             if (x >= BattlefieldCircumstantials.Size || x < 0 || y >= BattlefieldCircumstantials.Size || y < 0)
             {
-                return targetType.Error;
+                return TargetType.Error;
             }
 
             var target = BattlefieldCircumstantials.FieldElementsArray[x, y];
 
             if (BattlefieldCircumstantials.BricksList.Contains(target))
             {
-                return targetType.Brick;
+                return TargetType.Brick;
             }
 
             if (target != null && target.GetType() == typeof(Boost))
             {
-                return targetType.Cherry;
+                return TargetType.Cherry;
             }
 
             if (Math.Abs(x - BattlefieldCircumstantials.XExit) < 0.2 && Math.Abs(y - BattlefieldCircumstantials.YExit) < 0.2)
             {
-                return targetType.Exit;
+                return TargetType.Exit;
             }
 
             if (Math.Abs(x - BattlefieldCircumstantials.XEntrance) < 0.2 && Math.Abs(y - BattlefieldCircumstantials.YEntrance) < 0.2)
             {
-                return targetType.Entrance;
+                return TargetType.Entrance;
             }
 
-            return targetType.Null;
+            return TargetType.Null;
         }
 
         private void ApplyBoost(ushort x, ushort y)

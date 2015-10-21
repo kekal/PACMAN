@@ -39,12 +39,5 @@
 
 
         </Canvas>
-        <StackPanel Orientation="Horizontal" >
-			<Button Content="DO" />
-            <Label x:Name="Calls" Content="0" Foreground="White"></Label>
-            <Label x:Name="Calls1" Content="0" Foreground="White"></Label>
-
-        </StackPanel>
-
     </StackPanel>
 </Window>

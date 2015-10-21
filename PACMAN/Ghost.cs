@@ -145,8 +145,6 @@ namespace PACMAN
 
         internal void MoveDecision()
         {
-            MainWindow.Wm.Calls.Content = BattlefieldCircumstantials.FindDirectDistance(this, BattlefieldCircumstantials.Puckman);
-
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
             
             if (BattlefieldCircumstantials.FindDirectDistance(this, BattlefieldCircumstantials.Puckman) < 1.2)
