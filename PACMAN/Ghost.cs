@@ -147,7 +147,7 @@ namespace PACMAN
         {
             if (double.IsNaN(Canvas.GetLeft(this)) || double.IsNaN(Canvas.GetTop(this))) return;
             
-            if (BattlefieldCircumstantials.FindDirectDistance(this, BattlefieldCircumstantials.Puckman) < 1.2)
+            if (BattlefieldCircumstantials.FindDirectDistance(this, BattlefieldCircumstantials.Puckman) < 40)
             {
                 MainWindow.Wm.PlayDeath();
                 return;
