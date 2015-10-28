@@ -80,7 +80,7 @@ namespace PACMAN
 
             var anim = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromMilliseconds(200)))
             {
-                EasingFunction = new PowerEase { EasingMode = EasingMode.EaseIn },
+                //EasingFunction = new PowerEase { EasingMode = EasingMode.EaseIn },
                 RepeatBehavior = RepeatBehavior.Forever,
                 AutoReverse = true
             };
@@ -119,7 +119,7 @@ namespace PACMAN
                 if (_newHorisontalDirection == _currentHorisontalDirection &&
                     _newVerticalDirection == _currentVerticalDirection)
                 {
-                    CreatureMovement(currentCoordinates);
+                    CreatureMovement(currentCoordinates, currentCoordinates);
                     return;
                 }
             }
@@ -138,7 +138,7 @@ namespace PACMAN
             {
                 _currentHorisontalDirection = _newHorisontalDirection;
                 _currentVerticalDirection = _newVerticalDirection;
-                CreatureMovement(new Point(newCoordX, newCoordY));
+                CreatureMovement(currentCoordinates, new Point(newCoordX, newCoordY));
                 return;
             }
 
@@ -147,25 +147,25 @@ namespace PACMAN
                 _currentHorisontalDirection = _newHorisontalDirection;
                 _currentVerticalDirection = _newVerticalDirection;
                 ApplyBoost((ushort)newCoordX, (ushort)newCoordY);
-                CreatureMovement(new Point(newCoordX, newCoordY));
+                CreatureMovement(currentCoordinates, new Point(newCoordX, newCoordY));
                 return;
             }
 
             if (predictibleTargetType == TargetType.Null || predictibleTargetType == TargetType.Entrance || predictibleTargetType == TargetType.Exit)
             {
-                CreatureMovement(new Point(oldCoordX, oldCoordY));
+                CreatureMovement(currentCoordinates, new Point(oldCoordX, oldCoordY));
                 return;
             }
 
             if (predictibleTargetType == TargetType.Cherry)
             {
                 ApplyBoost((ushort)oldCoordX, (ushort)oldCoordY);
-                CreatureMovement(new Point(newCoordX, newCoordY));
+                CreatureMovement(currentCoordinates, new Point(newCoordX, newCoordY));
                 return;
             }
 
 
-            CreatureMovement(currentCoordinates);
+            CreatureMovement(currentCoordinates, currentCoordinates);
         }
 
         private TargetType DefineTargetType(int x, int y)
@@ -219,23 +219,26 @@ namespace PACMAN
 
         }
 
-        private void CreatureMovement(Point goal)
+        private void CreatureMovement(Point start, Point goal)
         {
-            
-
             const ushort square = BattlefieldCircumstantials.Squaresize;
 
-            var oldDiscreteX = Canvas.GetLeft(this) / square;
-            var oldDiscreteY = Canvas.GetTop(this) / square;
+            //var oldDiscreteX = Math.Round(Canvas.GetLeft(this) / square);
+            //var oldDiscreteY = Math.Round(Canvas.GetTop(this) / square);
 
-            var oldX = Canvas.GetLeft(this);
-            var oldY = Canvas.GetTop(this);
+            var oldDiscreteX = start.X;
+            var oldDiscreteY = start.Y;
 
-            var newX = goal.X * square;
-            var newY = goal.Y * square;
+            var oldX = oldDiscreteX * square;
+            var oldY = oldDiscreteY * square;
 
             var newDiscreteX = goal.X;
             var newdiscreteY = goal.Y;
+
+            var newX = newDiscreteX * square;
+            var newY = newdiscreteY * square;
+
+            
 
             var dur = new Duration(TimeSpan.FromMilliseconds(1 / _defaultSpeed));
 
@@ -260,6 +263,34 @@ namespace PACMAN
                 (ushort)Math.Round(newDiscreteX),
                 (ushort)Math.Round(newdiscreteY));
 
+            Log.addLog(
+                String.Format("Decide to move from {0,2},{1,-2}  to  {2,2},{3,-2}   current coords: {4,-3},{5,-3}   ({6,-6:N3},{7,-6:N3})",
+                Math.Round(oldDiscreteX), Math.Round(oldDiscreteY),
+                Math.Round(newDiscreteX), Math.Round(newdiscreteY),
+                Math.Round(oldX), Math.Round(oldY),
+                oldDiscreteX, oldDiscreteY)
+                );
+
+            var dist = Math.Abs(Math.Sqrt(Math.Pow(newX - Canvas.GetLeft(this), 2) + Math.Pow(newY - Canvas.GetTop(this), 2)) % square);
+
+            if (dist > 10)
+            {
+                dist = Math.Abs(square - dist);
+            }
+
+            //if (dist > 10)
+            //{
+            //    Log.addLog("Ворнинг, всё пропало. Планируемая дистанция слишком не кратна стороне квадрата поля. (на " +
+            //               dist + " пикселей)\r\n");
+            //}
+            //else
+            //{
+            Log.addLog("\t\t\t\t\t\t\t\t\t\t\tОшибка позиционирования пакмана: " + Math.Round(dist));
+            //}
+
+            Canvas.SetLeft(this, oldX);
+            Canvas.SetTop(this, oldY);
+
             var sb = new Storyboard();
 
             sb.Children.Add(xMovementAnimation);
@@ -280,28 +311,35 @@ namespace PACMAN
 
         internal void MoveDefine(KeyEventArgs args)
         {
+            
             switch (args.Key)
             {
                 case Key.Up:
                     _newVerticalDirection = VerticalDirection.Up;
                     _newHorisontalDirection = HorisontalDirection.Stay;
+                    Log.addLog("Pressed UP");
                     break;
 
                 case Key.Down:
                     _newVerticalDirection = VerticalDirection.Down;
                     _newHorisontalDirection = HorisontalDirection.Stay;
+                    Log.addLog("Pressed Down");
                     break;
 
                 case Key.Left:
                     _newVerticalDirection = VerticalDirection.Stay;
                     _newHorisontalDirection = HorisontalDirection.Left;
+                    Log.addLog("Pressed Left");
                     break;
 
                 case Key.Right:
                     _newVerticalDirection = VerticalDirection.Stay;
                     _newHorisontalDirection = HorisontalDirection.Right;
+                    Log.addLog("Pressed Right");
                     break;
             }
+
+
         }
     }
 }
