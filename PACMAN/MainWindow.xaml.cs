@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace PACMAN
 {
@@ -10,6 +14,11 @@ namespace PACMAN
             InitializeComponent();
             Wm = this;
             BattlefieldCircumstantials.GenerateField();
+
+            
+
+            Log.now = DateTime.Now;
+            Log.addLog("Program start");
 
             Init();
         }
@@ -54,6 +63,19 @@ namespace PACMAN
             foreach (var child in Battlfield.Children)
             {
                 ((UIElement)child).Visibility = Visibility.Collapsed;
+            }
+        }
+
+
+        public static void InMainDispatch(Action dlg)
+        {
+            if (Thread.CurrentThread.Name == "Main Thread")
+            {
+                dlg();
+            }
+            else
+            {
+                Wm.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<string>(delegate { dlg(); }), "?");
             }
         }
     }

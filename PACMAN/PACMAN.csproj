@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PACMAN</RootNamespace>
     <AssemblyName>PACMAN</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <ExpressionBlendVersion>5.0.40218.0</ExpressionBlendVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,9 +57,11 @@
     </ApplicationDefinition>
     <Compile Include="AlreadyInstatiated.cs" />
     <Compile Include="Boost.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="PathFind.cs" />
     <Compile Include="Puckman.cs" />
     <Compile Include="RedGhost.cs" />
+    <Compile Include="TaskManager.cs" />
     <Compile Include="YellowGhost.cs" />
     <Page Include="Brick.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -101,6 +104,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

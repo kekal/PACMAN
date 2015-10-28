@@ -1,0 +1,264 @@
+156 :	Program start
+1 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+1 :												Ошибка позиционирования пакмана: 0
+240 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+1 :												Ошибка позиционирования пакмана: 0
+188 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 0
+218 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+1 :												Ошибка позиционирования пакмана: 0
+191 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+7 :												Ошибка позиционирования пакмана: 0
+197 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+6 :												Ошибка позиционирования пакмана: 0
+206 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+4 :												Ошибка позиционирования пакмана: 0
+203 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+1 :												Ошибка позиционирования пакмана: 0
+208 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+7 :												Ошибка позиционирования пакмана: 0
+197 :	Decide to move from 19,7   to  19,7    current coords: 570,210   (19,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 0
+70 :	Pressed Left
+125 :	Decide to move from 19,7   to  18,7    current coords: 570,210   (19,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 0
+195 :	Decide to move from 18,7   to  17,7    current coords: 540,210   (18,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 2
+191 :	Decide to move from 17,7   to  16,7    current coords: 510,210   (17,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from 16,7   to  15,7    current coords: 480,210   (16,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from 15,7   to  14,7    current coords: 450,210   (15,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from 14,7   to  13,7    current coords: 420,210   (14,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 2
+158 :	Pressed UP
+57 :	Decide to move from 13,7   to  13,6    current coords: 390,210   (13,000,7,000 )
+5 :												Ошибка позиционирования пакмана: 0
+192 :	Decide to move from 13,6   to  13,5    current coords: 390,180   (13,000,6,000 )
+5 :												Ошибка позиционирования пакмана: 2
+90 :	Pressed Left
+107 :	Decide to move from 13,5   to  12,5    current coords: 390,150   (13,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+195 :	Decide to move from 12,5   to  11,5    current coords: 360,150   (12,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 3
+192 :	Decide to move from 11,5   to  10,5    current coords: 330,150   (11,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+198 :	Decide to move from 10,5   to   9,5    current coords: 300,150   (10,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from  9,5   to   8,5    current coords: 270,150   (9,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 3
+206 :	Pressed Right
+6 :	Decide to move from  8,5   to   9,5    current coords: 240,150   (8,000 ,5,000 )
+4 :												Ошибка позиционирования пакмана: 0
+213 :	Decide to move from  9,5   to  10,5    current coords: 270,150   (9,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+219 :	Decide to move from 10,5   to  11,5    current coords: 300,150   (10,000,5,000 )
+4 :												Ошибка позиционирования пакмана: 0
+187 :	Decide to move from 11,5   to  12,5    current coords: 330,150   (11,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 3
+135 :	Pressed Left
+60 :	Decide to move from 12,5   to  11,5    current coords: 360,150   (12,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 3
+216 :	Decide to move from 11,5   to  10,5    current coords: 330,150   (11,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+190 :	Decide to move from 10,5   to   9,5    current coords: 300,150   (10,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+196 :	Decide to move from  9,5   to   8,5    current coords: 270,150   (9,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+101 :	Pressed Right
+98 :	Decide to move from  8,5   to   9,5    current coords: 240,150   (8,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 3
+191 :	Decide to move from  9,5   to  10,5    current coords: 270,150   (9,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+164 :	Pressed Left
+33 :	Decide to move from 10,5   to   9,5    current coords: 300,150   (10,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from  9,5   to   8,5    current coords: 270,150   (9,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from  8,5   to   7,5    current coords: 240,150   (8,000 ,5,000 )
+4 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from  7,5   to   6,5    current coords: 210,150   (7,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 3
+196 :	Decide to move from  6,5   to   5,5    current coords: 180,150   (6,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+5 :	Pressed Down
+190 :	Decide to move from  5,5   to   5,6    current coords: 150,150   (5,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+195 :	Decide to move from  5,6   to   5,7    current coords: 150,180   (5,000 ,6,000 )
+5 :												Ошибка позиционирования пакмана: 3
+194 :	Decide to move from  5,7   to   5,8    current coords: 150,210   (5,000 ,7,000 )
+9 :												Ошибка позиционирования пакмана: 2
+206 :	Decide to move from  5,8   to   5,9    current coords: 150,240   (5,000 ,8,000 )
+4 :												Ошибка позиционирования пакмана: 0
+101 :	Pressed UP
+96 :	Decide to move from  5,9   to   5,8    current coords: 150,270   (5,000 ,9,000 )
+4 :												Ошибка позиционирования пакмана: 3
+148 :	Pressed Down
+51 :	Decide to move from  5,8   to   5,9    current coords: 150,240   (5,000 ,8,000 )
+4 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from  5,9   to   5,10   current coords: 150,270   (5,000 ,9,000 )
+5 :												Ошибка позиционирования пакмана: 2
+211 :	Decide to move from  5,10  to   5,11   current coords: 150,300   (5,000 ,10,000)
+5 :												Ошибка позиционирования пакмана: 0
+215 :	Decide to move from  5,11  to   5,12   current coords: 150,330   (5,000 ,11,000)
+1 :												Ошибка позиционирования пакмана: 0
+198 :	Decide to move from  5,12  to   5,13   current coords: 150,360   (5,000 ,12,000)
+5 :												Ошибка позиционирования пакмана: 2
+208 :	Decide to move from  5,13  to   5,14   current coords: 150,390   (5,000 ,13,000)
+6 :												Ошибка позиционирования пакмана: 0
+211 :	Decide to move from  5,14  to   5,15   current coords: 150,420   (5,000 ,14,000)
+5 :												Ошибка позиционирования пакмана: 0
+45 :	Pressed UP
+147 :	Decide to move from  5,15  to   5,14   current coords: 150,450   (5,000 ,15,000)
+5 :												Ошибка позиционирования пакмана: 2
+214 :	Decide to move from  5,14  to   5,13   current coords: 150,420   (5,000 ,14,000)
+5 :												Ошибка позиционирования пакмана: 0
+213 :	Decide to move from  5,13  to   5,12   current coords: 150,390   (5,000 ,13,000)
+5 :												Ошибка позиционирования пакмана: 0
+15 :	Pressed Right
+180 :	Decide to move from  5,12  to   6,12   current coords: 150,360   (5,000 ,12,000)
+5 :												Ошибка позиционирования пакмана: 0
+24 :	Pressed Down
+171 :	Decide to move from  6,12  to   6,13   current coords: 180,360   (6,000 ,12,000)
+4 :												Ошибка позиционирования пакмана: 0
+214 :	Decide to move from  6,13  to   6,14   current coords: 180,390   (6,000 ,13,000)
+4 :												Ошибка позиционирования пакмана: 0
+31 :	Pressed Right
+162 :	Decide to move from  6,14  to   7,14   current coords: 180,420   (6,000 ,14,000)
+5 :												Ошибка позиционирования пакмана: 0
+195 :	Decide to move from  7,14  to   8,14   current coords: 210,420   (7,000 ,14,000)
+5 :												Ошибка позиционирования пакмана: 2
+197 :	Decide to move from  8,14  to   9,14   current coords: 240,420   (8,000 ,14,000)
+4 :												Ошибка позиционирования пакмана: 2
+193 :	Pressed Down
+4 :	Decide to move from  9,14  to   9,15   current coords: 270,420   (9,000 ,14,000)
+5 :												Ошибка позиционирования пакмана: 0
+196 :	Decide to move from  9,15  to   9,16   current coords: 270,450   (9,000 ,15,000)
+4 :												Ошибка позиционирования пакмана: 2
+105 :	Pressed Right
+90 :	Decide to move from  9,16  to  10,16   current coords: 270,480   (9,000 ,16,000)
+4 :												Ошибка позиционирования пакмана: 0
+191 :	Decide to move from 10,16  to  11,16   current coords: 300,480   (10,000,16,000)
+5 :												Ошибка позиционирования пакмана: 2
+196 :	Decide to move from 11,16  to  12,16   current coords: 330,480   (11,000,16,000)
+5 :												Ошибка позиционирования пакмана: 2
+196 :	Decide to move from 12,16  to  13,16   current coords: 360,480   (12,000,16,000)
+6 :												Ошибка позиционирования пакмана: 2
+195 :	Decide to move from 13,16  to  14,16   current coords: 390,480   (13,000,16,000)
+5 :												Ошибка позиционирования пакмана: 2
+210 :	Decide to move from 14,16  to  15,16   current coords: 420,480   (14,000,16,000)
+5 :												Ошибка позиционирования пакмана: 0
+125 :	Pressed UP
+90 :	Decide to move from 15,16  to  15,15   current coords: 450,480   (15,000,16,000)
+5 :												Ошибка позиционирования пакмана: 0
+190 :	Decide to move from 15,15  to  15,14   current coords: 450,450   (15,000,15,000)
+4 :												Ошибка позиционирования пакмана: 2
+200 :	Decide to move from 15,14  to  15,13   current coords: 450,420   (15,000,14,000)
+4 :												Ошибка позиционирования пакмана: 2
+194 :	Decide to move from 15,13  to  15,12   current coords: 450,390   (15,000,13,000)
+4 :												Ошибка позиционирования пакмана: 2
+210 :	Decide to move from 15,12  to  15,11   current coords: 450,360   (15,000,12,000)
+5 :												Ошибка позиционирования пакмана: 0
+202 :	Decide to move from 15,11  to  15,10   current coords: 450,330   (15,000,11,000)
+3 :												Ошибка позиционирования пакмана: 2
+209 :	Decide to move from 15,10  to  15,9    current coords: 450,300   (15,000,10,000)
+3 :												Ошибка позиционирования пакмана: 0
+204 :	Decide to move from 15,9   to  15,8    current coords: 450,270   (15,000,9,000 )
+5 :												Ошибка позиционирования пакмана: 3
+186 :	Decide to move from 15,8   to  15,7    current coords: 450,240   (15,000,8,000 )
+5 :												Ошибка позиционирования пакмана: 3
+217 :	Decide to move from 15,7   to  15,6    current coords: 450,210   (15,000,7,000 )
+3 :												Ошибка позиционирования пакмана: 0
+209 :	Decide to move from 15,6   to  15,5    current coords: 450,180   (15,000,6,000 )
+4 :												Ошибка позиционирования пакмана: 0
+196 :	Decide to move from 15,5   to  15,4    current coords: 450,150   (15,000,5,000 )
+5 :												Ошибка позиционирования пакмана: 2
+19 :	Pressed Right
+176 :	Decide to move from 15,4   to  16,4    current coords: 450,120   (15,000,4,000 )
+4 :												Ошибка позиционирования пакмана: 0
+198 :	Decide to move from 16,4   to  17,4    current coords: 480,120   (16,000,4,000 )
+4 :												Ошибка позиционирования пакмана: 2
+157 :	Pressed UP
+40 :	Decide to move from 17,4   to  17,3    current coords: 510,120   (17,000,4,000 )
+5 :												Ошибка позиционирования пакмана: 0
+196 :	Decide to move from 17,3   to  17,2    current coords: 510,90    (17,000,3,000 )
+4 :												Ошибка позиционирования пакмана: 2
+193 :	Decide to move from 17,2   to  17,1    current coords: 510,60    (17,000,2,000 )
+4 :												Ошибка позиционирования пакмана: 2
+198 :	Decide to move from 17,1   to  17,0    current coords: 510,30    (17,000,1,000 )
+5 :												Ошибка позиционирования пакмана: 2
+201 :	Program start
+1 :	Decide to move from  7,0   to   7,0    current coords: 210,0     (7,000 ,0,000 )
+1 :												Ошибка позиционирования пакмана: 0
+223 :	Decide to move from  7,0   to   7,0    current coords: 210,0     (7,000 ,0,000 )
+4 :												Ошибка позиционирования пакмана: 0
+197 :	Decide to move from  7,0   to   7,0    current coords: 210,0     (7,000 ,0,000 )
+5 :												Ошибка позиционирования пакмана: 0
+245 :	Decide to move from  7,0   to   7,0    current coords: 210,0     (7,000 ,0,000 )
+5 :												Ошибка позиционирования пакмана: 0
+165 :	Decide to move from  7,0   to   7,0    current coords: 210,0     (7,000 ,0,000 )
+6 :												Ошибка позиционирования пакмана: 0
+144 :	Pressed Down
+66 :	Decide to move from  7,0   to   7,1    current coords: 210,0     (7,000 ,0,000 )
+4 :												Ошибка позиционирования пакмана: 0
+229 :	Decide to move from  7,1   to   7,2    current coords: 210,30    (7,000 ,1,000 )
+5 :												Ошибка позиционирования пакмана: 7
+210 :	Decide to move from  7,2   to   7,3    current coords: 210,60    (7,000 ,2,000 )
+4 :												Ошибка позиционирования пакмана: 0
+263 :	Decide to move from  7,3   to   7,4    current coords: 210,90    (7,000 ,3,000 )
+5 :												Ошибка позиционирования пакмана: 0
+193 :	Decide to move from  7,4   to   7,5    current coords: 210,120   (7,000 ,4,000 )
+5 :												Ошибка позиционирования пакмана: 7
+111 :	Pressed Left
+157 :	Decide to move from  7,5   to   6,5    current coords: 210,150   (7,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+225 :	Decide to move from  6,5   to   5,5    current coords: 180,150   (6,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+246 :	Decide to move from  5,5   to   5,5    current coords: 150,150   (5,000 ,5,000 )
+4 :												Ошибка позиционирования пакмана: 0
+55 :	Pressed Down
+157 :	Decide to move from  5,5   to   5,6    current coords: 150,150   (5,000 ,5,000 )
+4 :												Ошибка позиционирования пакмана: 0
+210 :	Decide to move from  5,6   to   5,7    current coords: 150,180   (5,000 ,6,000 )
+5 :												Ошибка позиционирования пакмана: 7
+183 :	Decide to move from  5,7   to   5,8    current coords: 150,210   (5,000 ,7,000 )
+5 :												Ошибка позиционирования пакмана: 8
+182 :	Pressed Left
+10 :	Decide to move from  5,8   to   4,8    current coords: 150,240   (5,000 ,8,000 )
+5 :												Ошибка позиционирования пакмана: 1
+261 :	Decide to move from  4,8   to   3,8    current coords: 120,240   (4,000 ,8,000 )
+4 :												Ошибка позиционирования пакмана: 0
+196 :	Decide to move from  3,8   to   2,8    current coords: 90 ,240   (3,000 ,8,000 )
+4 :												Ошибка позиционирования пакмана: 5
+195 :	Decide to move from  2,8   to   2,8    current coords: 60 ,240   (2,000 ,8,000 )
+5 :												Ошибка позиционирования пакмана: 8
+245 :	Decide to move from  2,8   to   2,8    current coords: 60 ,240   (2,000 ,8,000 )
+5 :												Ошибка позиционирования пакмана: 0
+80 :	Pressed UP
+135 :	Decide to move from  2,8   to   2,7    current coords: 60 ,240   (2,000 ,8,000 )
+5 :												Ошибка позиционирования пакмана: 0
+195 :	Decide to move from  2,7   to   2,6    current coords: 60 ,210   (2,000 ,7,000 )
+5 :												Ошибка позиционирования пакмана: 7
+245 :	Decide to move from  2,6   to   2,5    current coords: 60 ,180   (2,000 ,6,000 )
+5 :												Ошибка позиционирования пакмана: 0
+206 :	Decide to move from  2,5   to   2,5    current coords: 60 ,150   (2,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 7
+76 :	Pressed Left
+157 :	Decide to move from  2,5   to   1,5    current coords: 60 ,150   (2,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+162 :	Pressed UP
+84 :	Decide to move from  1,5   to   1,4    current coords: 30 ,150   (1,000 ,5,000 )
+5 :												Ошибка позиционирования пакмана: 0
+209 :	Decide to move from  1,4   to   1,3    current coords: 30 ,120   (1,000 ,4,000 )
+5 :												Ошибка позиционирования пакмана: 8
+179 :	Decide to move from  1,3   to   1,2    current coords: 30 ,90    (1,000 ,3,000 )
+6 :												Ошибка позиционирования пакмана: 8
+195 :	Decide to move from  1,2   to   1,2    current coords: 30 ,60    (1,000 ,2,000 )
+5 :												Ошибка позиционирования пакмана: 7
+196 :	Decide to move from  1,2   to   1,2    current coords: 30 ,60    (1,000 ,2,000 )
+4 :												Ошибка позиционирования пакмана: 0
+195 :	Decide to move from  1,2   to   1,2    current coords: 30 ,60    (1,000 ,2,000 )
+8 :												Ошибка позиционирования пакмана: 0
+208 :	Decide to move from  1,2   to   1,2    current coords: 30 ,60    (1,000 ,2,000 )
+4 :												Ошибка позиционирования пакмана: 0
