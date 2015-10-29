@@ -263,7 +263,7 @@ namespace PACMAN
                 (ushort)Math.Round(newDiscreteX),
                 (ushort)Math.Round(newdiscreteY));
 
-            Log.addLog(
+            Log.AddLog(
                 String.Format("Decide to move from {0,2},{1,-2}  to  {2,2},{3,-2}   current coords: {4,-3},{5,-3}   ({6,-6:N3},{7,-6:N3})",
                 Math.Round(oldDiscreteX), Math.Round(oldDiscreteY),
                 Math.Round(newDiscreteX), Math.Round(newdiscreteY),
@@ -278,15 +278,11 @@ namespace PACMAN
                 dist = Math.Abs(square - dist);
             }
 
-            //if (dist > 10)
-            //{
-            //    Log.addLog("Ворнинг, всё пропало. Планируемая дистанция слишком не кратна стороне квадрата поля. (на " +
-            //               dist + " пикселей)\r\n");
-            //}
-            //else
-            //{
-            Log.addLog("\t\t\t\t\t\t\t\t\t\t\tОшибка позиционирования пакмана: " + Math.Round(dist));
-            //}
+            if (dist > 10)
+            {
+                Log.AddLog("\t\t\t\t\t\t\t\t\t\t\tОшибка позиционирования пакмана: " + Math.Round(dist));
+            }
+           
 
             Canvas.SetLeft(this, oldX);
             Canvas.SetTop(this, oldY);
@@ -317,25 +313,25 @@ namespace PACMAN
                 case Key.Up:
                     _newVerticalDirection = VerticalDirection.Up;
                     _newHorisontalDirection = HorisontalDirection.Stay;
-                    Log.addLog("Pressed UP");
+                    Log.AddLog("Pressed UP");
                     break;
 
                 case Key.Down:
                     _newVerticalDirection = VerticalDirection.Down;
                     _newHorisontalDirection = HorisontalDirection.Stay;
-                    Log.addLog("Pressed Down");
+                    Log.AddLog("Pressed Down");
                     break;
 
                 case Key.Left:
                     _newVerticalDirection = VerticalDirection.Stay;
                     _newHorisontalDirection = HorisontalDirection.Left;
-                    Log.addLog("Pressed Left");
+                    Log.AddLog("Pressed Left");
                     break;
 
                 case Key.Right:
                     _newVerticalDirection = VerticalDirection.Stay;
                     _newHorisontalDirection = HorisontalDirection.Right;
-                    Log.addLog("Pressed Right");
+                    Log.AddLog("Pressed Right");
                     break;
             }
 

@@ -1,24 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows;
+using System.Reflection;
 
 namespace PACMAN
 {
     static class Log
     {
-        public static DateTime now;
+        private static readonly string Path = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\log.txt";
+        public static DateTime Now;
         private static StreamWriter _writer;
-        public static void addLog(string logMessage)
+        public static void AddLog(string logMessage)
         {
             TaskManager.Add(null, delegate
             {
-                using (_writer = File.AppendText("log.txt"))
+                using (_writer = File.AppendText(Path))
                 {
-                    _writer.Write("{0}", Math.Round((DateTime.Now - now).TotalMilliseconds));
-                    Log.now = DateTime.Now;
+                    _writer.Write("{0}", Math.Round((DateTime.Now - Now).TotalMilliseconds));
+                    Now = DateTime.Now;
                     _writer.WriteLine(" :\t{0}", logMessage);
                 }
             });

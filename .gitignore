@@ -5,3 +5,5 @@ obj
 *.pdb
 *.csproj.user
 Debug
+PACMAN.exe.config
+log.txt
