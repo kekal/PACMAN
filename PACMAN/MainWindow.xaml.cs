@@ -17,8 +17,8 @@ namespace PACMAN
 
             
 
-            Log.now = DateTime.Now;
-            Log.addLog("Program start");
+            Log.Now = DateTime.Now;
+            Log.AddLog("Program start");
 
             Init();
         }
