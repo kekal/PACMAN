@@ -11,4 +11,4 @@ The Pacman is need to be placed to the Exit square (second "hole" in the walls a
 The Pacman is catched up by one of the ghosts.
 ### Cherry
 It's a speed boost for pacman on three seconds of playtime.
-#<img alt="monster" align="center" src="http://f2.s.qip.ru/s6WVNnj9.png" />
+#<img alt="monster" align="center" src="http://imgur.com/download/N2kxZit" />
